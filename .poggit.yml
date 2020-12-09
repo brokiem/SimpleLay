@@ -5,4 +5,5 @@ branches:
 projects:
   SimpleLay:
     path: ""
+    icon: "/assets/logo.PNG"
 ...
