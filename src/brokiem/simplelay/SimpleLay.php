@@ -1,8 +1,6 @@
 <?php
 
-
 namespace brokiem\simplelay;
-
 
 use brokiem\simplelay\entity\LayingEntity;
 use pocketmine\command\Command;
@@ -20,6 +18,9 @@ use pocketmine\utils\TextFormat;
 class SimpleLay extends PluginBase implements Listener
 {
 
+	/** @var array $layingPlayer */
+	public $layingPlayer = [];
+
 	public function onEnable()
 	{
 		Entity::registerEntity(LayingEntity::class, true);
@@ -32,20 +33,24 @@ class SimpleLay extends PluginBase implements Listener
 
 		switch (strtolower($command->getName())) {
 			case "lay":
-				$this->setLay($sender);
+				if ($this->isLaying($sender)) {
+					$this->unsetLay($sender);
+				} else {
+					$this->setLay($sender);
+				}
 				break;
 		}
 
 		return true;
 	}
 
+	public function isLaying(Player $player): bool
+	{
+		return isset($this->layingPlayer[$player->getId()]);
+	}
+
 	private function setLay(Player $player)
 	{
-		if($player->isImmobile()){ // TODO: Better to check using the player array instead of this
-			$this->unsetLay($player);
-			return;
-		}
-
 		$nbt = Entity::createBaseNBT($player);
 		$nbt->setTag($player->namedtag->getTag("Skin"));
 
@@ -58,9 +63,10 @@ class SimpleLay extends PluginBase implements Listener
 		$layingEntity->getDataPropertyManager()->setFloat(LayingEntity::DATA_BOUNDING_BOX_HEIGHT, 0.2);
 		$layingEntity->getArmorInventory()->setContents($player->getArmorInventory()->getContents());
 		$layingEntity->getInventory()->setContents($player->getInventory()->getContents());
+		$this->layingPlayer[$player->getId()] = $layingEntity;
 		$layingEntity->spawnToAll();
 
-		$player->setInvisible(); // hide player
+		$player->setInvisible();
 		$player->setImmobile();
 		$player->sendMessage(TextFormat::GOLD . "You are now laying!");
 	}
@@ -69,35 +75,41 @@ class SimpleLay extends PluginBase implements Listener
 	{
 		$player = $event->getPlayer();
 
-		$this->unsetLay($player);
+		if ($this->isLaying($player)) {
+			$this->unsetLay($player);
+		}
 	}
 
 	public function onPlayerQuit(PlayerQuitEvent $event)
 	{
 		$player = $event->getPlayer();
 
-		$this->unsetLay($player);
+		if ($this->isLaying($player)) {
+			$this->unsetLay($player);
+		}
 	}
 
-	public function onPlayerJoin(PlayerJoinEvent $event){
+	public function onPlayerJoin(PlayerJoinEvent $event)
+	{
 		$player = $event->getPlayer();
 
-		$this->unsetLay($player);
+		if ($this->isLaying($player)) {
+			$this->unsetLay($player);
+		}
 	}
 
 	private function unsetLay(Player $player)
 	{
-		foreach($player->getLevelNonNull()->getEntities() as $entities) {
+		if (!$this->isLaying($player)) return;
+		$entity = $this->layingPlayer[$player->getId()];
 
-			if ($entities instanceof LayingEntity) {
-				if ($entities->getNameTag() === $player->getDisplayName()) { // TODO: Better to check using the player array instead of this
-					$entities->flagForDespawn();
-
-					$player->setInvisible(false);
-					$player->setImmobile(false);
-					$player->sendMessage("You are no longer laying!");
-				}
-			}
+		if ($entity instanceof LayingEntity) {
+			$entity->flagForDespawn();
 		}
+
+		$player->setInvisible(false);
+		$player->setImmobile(false);
+		$player->sendMessage(TextFormat::GOLD . "You are no longer laying.");
+		unset($this->layingPlayer[$player->getId()]);
 	}
 }
