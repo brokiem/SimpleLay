@@ -26,14 +26,6 @@ class SimpleLay extends PluginBase implements Listener
 	{
 		Entity::registerEntity(LayingEntity::class, true);
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-
-		foreach ($this->getServer()->getLevels() as $level){
-			foreach ($level->getEntities() as $entities) {
-				if ($entities instanceof LayingEntity) {
-					$entities->flagForDespawn();
-				}
-			}
-		}
 	}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
@@ -42,10 +34,26 @@ class SimpleLay extends PluginBase implements Listener
 
 		switch (strtolower($command->getName())) {
 			case "lay":
-				if ($this->isLaying($sender)) {
-					$this->unsetLay($sender);
+				if (isset($args[0])) {
+					if ($args[0] === "clear") {
+						if ($sender->hasPermission("clear.lay.entites")) {
+							foreach ($this->getServer()->getLevels() as $level) {
+								foreach ($level->getEntities() as $entities) {
+									if ($entities instanceof LayingEntity) {
+										$entities->flagForDespawn();
+									}
+								}
+							}
+
+							$sender->sendMessage(TextFormat::GOLD . "Lay entities cleared!");
+						}
+					}
 				} else {
-					$this->setLay($sender);
+					if ($this->isLaying($sender)) {
+						$this->unsetLay($sender);
+					} else {
+						$this->setLay($sender);
+					}
 				}
 				break;
 		}
@@ -81,6 +89,7 @@ class SimpleLay extends PluginBase implements Listener
 		$player->teleport(new Vector3($player->getX(), $player->getY() - 1, $player->getZ()));
 		$player->setScale(0.1);
 		$player->sendMessage(TextFormat::GOLD . "You are now laying!");
+		$player->sendTip("Tap the sneak button to stand up");
 	}
 
 	public function onEntityDamage(EntityDamageEvent $event){
@@ -121,10 +130,6 @@ class SimpleLay extends PluginBase implements Listener
 	{
 		$entity = $this->layingPlayer[$player->getId()];
 
-		if ($entity instanceof LayingEntity) {
-			$entity->flagForDespawn();
-		}
-
 		$player->setInvisible(false);
 		$player->setImmobile(false);
 		$player->setScale(1);
@@ -132,5 +137,11 @@ class SimpleLay extends PluginBase implements Listener
 		$player->sendMessage(TextFormat::GOLD . "You are no longer laying.");
 
 		unset($this->layingPlayer[$player->getId()]);
+
+		if ($entity instanceof LayingEntity) {
+			if($entity->isFlaggedForDespawn()) return;
+
+			$entity->flagForDespawn();
+		}
 	}
 }
