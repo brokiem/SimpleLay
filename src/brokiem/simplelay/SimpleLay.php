@@ -41,13 +41,9 @@ class SimpleLay extends PluginBase implements Listener
 
 	private function setLay(Player $player)
 	{
-		if($player->isImmobile()){
+		if($player->isImmobile()){ // TODO: Better to check using the player array instead of this
 			$this->unsetLay($player);
 			return;
-		}
-
-		foreach ($this->getServer()->getOnlinePlayers() as $players) {
-			$players->hidePlayer($player);
 		}
 
 		$nbt = Entity::createBaseNBT($player);
@@ -64,7 +60,7 @@ class SimpleLay extends PluginBase implements Listener
 		$layingEntity->getInventory()->setContents($player->getInventory()->getContents());
 		$layingEntity->spawnToAll();
 
-		$player->setInvisible();
+		$player->setInvisible(); // hide player
 		$player->setImmobile();
 		$player->sendMessage(TextFormat::GOLD . "You are now laying!");
 	}
@@ -94,7 +90,7 @@ class SimpleLay extends PluginBase implements Listener
 		foreach($player->getLevelNonNull()->getEntities() as $entities) {
 
 			if ($entities instanceof LayingEntity) {
-				if ($entities->getNameTag() === $player->getDisplayName()) {
+				if ($entities->getNameTag() === $player->getDisplayName()) { // TODO: Better to check using the player array instead of this
 					$entities->flagForDespawn();
 
 					$player->setInvisible(false);
