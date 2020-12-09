@@ -68,6 +68,8 @@ class SimpleLay extends PluginBase implements Listener
 
 	private function setLay(Player $player)
 	{
+		$player->saveNBT();
+		
 		$nbt = Entity::createBaseNBT($player);
 		$nbt->setTag($player->namedtag->getTag("Skin"));
 
