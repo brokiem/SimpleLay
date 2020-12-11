@@ -6,7 +6,7 @@ Lay on every Block with "/lay"
 | Command | Description | Permission |
 | --- | --- | --- |
 | ```/lay``` | Lay on a Block | - |
-| ```/lay clear``` | Clear lay npc | ```clear.lay.entites``` |
+| ```/lay clear``` | Clear lay npc | ```clear.lay.npc``` |
 
 ### Issues
 Known Issues: 
