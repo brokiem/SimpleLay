@@ -1,4 +1,4 @@
-## Simple Lay <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="50">
+## Simple Lay <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="30">
 **Plugin which allows to Lay on the Ground!** <br>
 Lay on every Block with "/lay"
 
@@ -16,7 +16,6 @@ Known Issues:
 For another issues, please report [Here](https://github.com/brokiem/SimpleLay/issues/new)
 
 ### Images
-<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying1.PNG">
+<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying4.PNG">
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying2.PNG">
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying3.PNG">
-<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying.PNG">
