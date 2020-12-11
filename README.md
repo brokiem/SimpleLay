@@ -1,5 +1,5 @@
 ## Simple Lay
-**Plugin which allows to Lay on the Ground!**
+**Plugin which allows to Lay on the Ground!** <br>
 Lay on every Block with "/lay"
 
 ### Commands
