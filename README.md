@@ -3,10 +3,10 @@
 Lay on every Block with "/lay"
 
 ### Commands
-| Command | Description |
-| --- | --- |
-| ```/lay``` | Lay on a Block |
-| ```/lay clear``` | Clear lay npc |
+| Command | Description | Permission |
+| --- | --- | --- |
+| ```/lay``` | Lay on a Block | - |
+| ```/lay clear``` | Clear lay npc | ```clear.lay.entites``` |
 
 ### Issues
 Known Issues: 
