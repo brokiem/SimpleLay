@@ -1,4 +1,4 @@
-## Simple Lay
+## Simple Lay <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="50>
 **Plugin which allows to Lay on the Ground!** <br>
 Lay on every Block with "/lay"
 
