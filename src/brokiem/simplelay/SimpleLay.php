@@ -35,7 +35,7 @@ class SimpleLay extends PluginBase implements Listener
 		switch (strtolower($command->getName())) {
 			case "lay":
 				if (isset($args[0]) and $args[0] === "clear") {
-					if ($sender->hasPermission("clear.lay.entites")) {
+					if ($sender->hasPermission("clear.lay.npc")) {
 						foreach ($this->getServer()->getLevels() as $level) {
 							foreach ($level->getEntities() as $entities) {
 								if ($entities instanceof LayingEntity) {
