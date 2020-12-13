@@ -28,7 +28,9 @@ class LayingEntity extends Human
 
 	public function onUpdate(int $currentTick): bool
 	{
-		$this->applyGravity();
+		if($this->isFlaggedForDespawn()){
+			return true;
+		}
 
 		$this->getArmorInventory()->setContents($this->player->getArmorInventory()->getContents());
 		$this->getInventory()->setContents($this->player->getInventory()->getContents());
