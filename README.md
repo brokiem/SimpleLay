@@ -2,6 +2,9 @@
 **Plugin which allows to Lay on the Ground!** <br>
 Lay on every Block with "/lay"
 
+[![](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
+<a href="https://poggit.pmmp.io/p/SimpleLay"><img src="https://poggit.pmmp.io/shield.state/SimpleLay"></a>
+
 ### Commands
 | Command | Description | Permission |
 | --- | --- | --- |
