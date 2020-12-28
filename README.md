@@ -1,8 +1,10 @@
-<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="40"> ## Simple Lay
+## Simple Lay <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="40"> 
 **Plugin which allows to Lay on the Ground!** <br>
-Lay on every Block with "/lay"
 
 [![](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
+
+### Description
+With this plugin, you can lay down wherever you want!
 
 ### Commands
 | Command | Description | Permission |
@@ -11,7 +13,7 @@ Lay on every Block with "/lay"
 
 ### Issues
 Known Issues: 
-- The player does not fall if there are no blocks under the player (No Gravity) HELP!
+- The player does not fall if there are no blocks under the player (No Gravity) WELP!
 
 For another issues, please report [Here](https://github.com/brokiem/SimpleLay/issues/new)
 
