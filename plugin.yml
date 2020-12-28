@@ -1,9 +1,9 @@
 name: SimpleLay
 main: brokiem\simplelay\SimpleLay
-version: 1.0.4
+version: 1.1.0
 api: 3.13.0
 author: brokiem
 
 commands:
   lay:
-    description: "lay"
+    description: "laying down"
