@@ -1,4 +1,4 @@
-## Simple Lay <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="30">
+<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="40"> ## Simple Lay
 **Plugin which allows to Lay on the Ground!** <br>
 Lay on every Block with "/lay"
 
@@ -8,12 +8,10 @@ Lay on every Block with "/lay"
 | Command | Description | Permission |
 | --- | --- | --- |
 | ```/lay``` | Lay on a Block | - |
-| ```/lay clear``` | Clear lay npc | ```clear.lay.npc``` |
 
 ### Issues
 Known Issues: 
-- The player does not fall if there are no blocks under the player (No Gravity)
-- Lay NPC doesn't disappear when server is stopped or crashes while player is laying down
+- The player does not fall if there are no blocks under the player (No Gravity) HELP!
 
 For another issues, please report [Here](https://github.com/brokiem/SimpleLay/issues/new)
 
