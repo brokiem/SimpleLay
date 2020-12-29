@@ -1,4 +1,4 @@
-<?php /** @noinspection SpellCheckingInspection */
+<?php
 
 namespace brokiem\simplelay;
 
@@ -111,6 +111,7 @@ class SimpleLay extends PluginBase implements Listener
             if ($this->isLaying($entity)) {
                 $event->setCancelled();
             }
+            
             if ($event instanceof EntityDamageByEntityEvent) {
                 if ($this->isLaying($entity)) {
                     $event->setCancelled();
