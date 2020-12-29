@@ -1,4 +1,5 @@
-## Simple Lay <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="40"> 
+<h1>SimpleLay<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="64" width="64" align="left"></img></h1><br>
+
 **Plugin which allows to Lay on the Ground!** <br>
 
 [![](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
