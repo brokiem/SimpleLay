@@ -2,6 +2,7 @@
 **Plugin which allows to Lay on the Ground!** <br>
 
 [![](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
+[![](https://poggit.pmmp.io/shield.dl/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 
 ### Description
 With this plugin, you can lay down wherever you want!
