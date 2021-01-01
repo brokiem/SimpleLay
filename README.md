@@ -4,8 +4,8 @@
 
 [![](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 [![](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
-[![](https://poggit.pmmp.io/shield.api/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 [![](https://githubbadges.com/star.svg?user=brokiem&repo=SimpleLay&style=flat&color=fff&background=007ec6)](https://github.com/brokiem/SimpleLay/stargazers)
+[![](https://githubbadges.com/fork.svg?user=brokiem&repo=SimpleLay&style=flat&color=fff&background=007ec6)](https://github.com/brokiem/SimpleLay/fork)
 
 ### Description
 With this plugin, you can lay down wherever you want!
