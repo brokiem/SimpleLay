@@ -4,8 +4,7 @@
 
 [![](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 [![](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
-[![](https://githubbadges.com/star.svg?user=brokiem&repo=SimpleLay&style=flat&color=fff&background=007ec6)](https://github.com/brokiem/SimpleLay/stargazers)
-[![](https://githubbadges.com/fork.svg?user=brokiem&repo=SimpleLay&background=00FF00&color=fff&style=flat)](https://github.com/brokiem/SimpleLay/fork)<br>
+[![](https://githubbadges.com/star.svg?user=brokiem&repo=SimpleLay&style=flat&color=fff&background=007ec6)](https://github.com/brokiem/SimpleLay/stargazers)<br>
 [![](https://forthebadge.com/images/badges/built-with-love.svg)](https://poggit.pmmp.io/p/SimpleLay)
 [![](https://forthebadge.com/images/badges/open-source.svg)](https://poggit.pmmp.io/p/SimpleLay)
 
@@ -21,7 +20,7 @@ With this plugin, you can lay down wherever you want!
 Known Issues: 
 - The player does not fall if there are no blocks under the player (No Gravity) WELP!
 
-For another issues, please report [Here](https://github.com/brokiem/SimpleLay/issues/new)
+For another issues, please report [here](https://github.com/brokiem/SimpleLay/issues/new)
 
 ### Images
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying4.PNG">
