@@ -95,9 +95,9 @@ class SimpleLay extends PluginBase implements Listener
         unset($this->layingPlayer[$player->getId()]);
 
         if ($entity instanceof LayingEntity) {
-            if ($entity->isFlaggedForDespawn()) return;
-
-            $entity->flagForDespawn();
+            if (!$entity->isFlaggedForDespawn()){
+                $entity->flagForDespawn();
+            }
         }
 
         $player->teleport(new Vector3($player->getX(), $player->getY() + 1.2, $player->getZ()));
@@ -166,7 +166,9 @@ class SimpleLay extends PluginBase implements Listener
         foreach ($this->getServer()->getLevels() as $level) {
             foreach ($level->getEntities() as $entity) {
                 if ($entity instanceof LayingEntity) {
-                    $entity->flagForDespawn();
+                    if (!$entity->isFlaggedForDespawn()){
+                        $entity->flagForDespawn();
+                    }
                 }
             }
         }
