@@ -6,4 +6,11 @@ author: brokiem
 
 commands:
   lay:
-    description: "laying down"
+    description: "lay on a block"
+    permission: simplelay.lay
+    usage: /lay
+
+permissions:
+  simplelay.lay:
+    default: true
+    description: "permission to allow the use of lay command"
