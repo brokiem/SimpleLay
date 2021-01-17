@@ -9,8 +9,15 @@ commands:
     description: "lay on a block"
     permission: simplelay.lay
     usage: /lay
+  sit:
+    description: "sit on a block"
+    permission: simplelay.sit
+    usage: /lay
 
 permissions:
   simplelay.lay:
     default: true
     description: "permission to allow the use of lay command"
+  simplelay.sit:
+    default: true
+    description: "permission to allow the use of sit command"

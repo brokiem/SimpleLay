@@ -1,0 +1,28 @@
+---
+#--- SimpleLay Config File ---#
+# Author: @brokiem (https://github.com/brokiem)
+# Source code: https://github.com/brokiem/SimpleLay
+
+# You can use & instead of § for color code
+
+#--- Do not change this! ---#
+config-version: 1.0
+#---------------------------#
+
+#-------- Messages --------#
+lay-message: "&6You are now laying!"
+sit-message: "&6You are now sitting!"
+crawl-message: "&6You are now crawling!"
+
+already-in-seat: "&6You are already sitting!"
+
+no-longer-lay-message: "&6You are no longer laying!"
+no-longer-sit-message: "&6You are no longer sitting!"
+no-longer-crawl-message: "&6You are no longer crawling!"
+
+tap-sneak-button-message: "Tap the sneak button to stand up"   # <<--- [this is send tip]
+
+#----- Sit Messages -----#
+sit-already-in-use: "&cthis seat is occupied"
+#-------- -------- --------#
+...
