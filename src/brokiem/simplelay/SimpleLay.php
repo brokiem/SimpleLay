@@ -1,25 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brokiem\simplelay;
 
+use brokiem\simplelay\entity\EventListener;
 use brokiem\simplelay\entity\LayingEntity;
 use pocketmine\block\Air;
 use pocketmine\block\Slab;
+use pocketmine\block\Solid;
 use pocketmine\block\Stair;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\EntityLevelChangeEvent;
-use pocketmine\event\entity\EntityTeleportEvent;
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerQuitEvent;
-use pocketmine\event\player\PlayerToggleSneakEvent;
-use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
-use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\network\mcpe\protocol\RemoveActorPacket;
 use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
 use pocketmine\network\mcpe\protocol\types\EntityLink;
@@ -27,7 +22,7 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
-class SimpleLay extends PluginBase implements Listener
+class SimpleLay extends PluginBase
 {
 
     /** @var array $layingPlayer */
@@ -36,26 +31,26 @@ class SimpleLay extends PluginBase implements Listener
     /** @var array $sittingPlayer */
     private $sittingPlayer;
 
-    /** @var int $eid */
-    private $eid;
+    /** @var array $crawlingPlayer */
+    private $crawlingPlayer;
 
     public function onEnable()
     {
         $this->saveDefaultConfig();
-        $this->eid = Entity::$entityCount++;
 
         $this->checkConfig();
 
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
 
-    private function checkConfig(){
-        if ($this->getConfig()->get("config-version") !== 1.0){
+    private function checkConfig()
+    {
+        if ($this->getConfig()->get("config-version") !== 1.0) {
             $this->getLogger()->notice("Your configuration file is outdated, updating the config.yml...");
             $this->getLogger()->notice("The old configuration file can be found at config.yml.old");
 
-            rename($this->getDataFolder()."config.yml", $this->getDataFolder()."config.yml.old");
+            rename($this->getDataFolder() . "config.yml", $this->getDataFolder() . "config.yml.old");
             $this->saveDefaultConfig();
         }
     }
@@ -82,19 +77,17 @@ class SimpleLay extends PluginBase implements Listener
                     $this->setSit($sender);
                 }
                 break;
+            case "crawl":
+                if ($this->isCrawling($sender)) {
+                    $this->unsetCrawl($sender);
+                } else {
+                    $this->setCrawl($sender);
+                }
         }
 
         return true;
     }
 
-    public function dataPacket(DataPacketReceiveEvent $event){
-        $packet = $event->getPacket();
-        if($packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE){
-            $this->unsetSit($event->getPlayer());
-        }
-    }
-
-    ########## LAY START ##########
     public function isLaying(Player $player): bool
     {
         return isset($this->layingPlayer[$player->getId()]);
@@ -141,63 +134,68 @@ class SimpleLay extends PluginBase implements Listener
         unset($this->layingPlayer[$player->getId()]);
 
         if ($entity instanceof LayingEntity) {
-            if (!$entity->isFlaggedForDespawn()){
+            if (!$entity->isFlaggedForDespawn()) {
                 $entity->flagForDespawn();
             }
         }
 
         $player->teleport(new Vector3($player->getX(), $player->getY() + 1.2, $player->getZ()));
     }
-    ######### LAY END #########
 
-    ######### SIT START #########
     public function isSitting(Player $player): bool
     {
         return isset($this->sittingPlayer[$player->getId()]);
     }
 
-    public function setSit(Player $player){
-        $block = $player->getLevel()->getBlock($player->asVector3()->add(0, -0.5, 0));
+    public function setSit(Player $player)
+    {
+        $eid = Entity::$entityCount++;
+        $block = $player->getLevel()->getBlock($player->asVector3()->add(0, -0.5));
 
-        if ($block instanceof Air){
+        if ($block instanceof Air) {
             return;
         }
 
-        if ($this->isSitting($player)){
+        if ($block instanceof Stair or $block instanceof Slab) {
+            $pos = $block->add(0.5, 1.5, 0.5);
+        } elseif ($block instanceof Solid) {
+            $pos = $block->add(0.5, 2.1, 0.5);
+        } else {
+            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied")));
+            return;
+        }
+
+        if ($this->isSitting($player)) {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("already-in-seat")));
             return;
         }
 
         $pk = new AddActorPacket();
-        $pk->entityRuntimeId = $this->eid;
+        $pk->entityRuntimeId = $eid;
         $pk->type = AddActorPacket::LEGACY_ID_MAP_BC[Entity::WOLF]; // i love wolf
-
-        if ($block instanceof Stair or $block instanceof Slab){
-            $pos = $block->add(0.5, 1.5, 0.5);
-        } else {
-            $pos = $block->add(0.5, 2.1, 0.5);
-        }
 
         $pk->position = $pos;
         $pk->metadata = [Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, (1 << Entity::DATA_FLAG_IMMOBILE | 1 << Entity::DATA_FLAG_SILENT | 1 << Entity::DATA_FLAG_INVISIBLE)]];
 
         $link = new SetActorLinkPacket();
-        $link->link = new EntityLink($this->eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
+        $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
         $player->setGenericFlag(Entity::DATA_FLAG_RIDING, true);
 
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $link);
 
-        $this->sittingPlayer[$player->getId()] = $this->eid;
+        $this->sittingPlayer[$player->getId()] = $eid;
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("sit-message")));
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message")));
     }
 
-    public function unsetSit(Player $player){
-        $pk = new RemoveActorPacket();
-        $pk->entityUniqueId = $this->sittingPlayer[$player->getId()];
-        $player->getServer()->broadcastPacket($player->getServer()->getOnlinePlayers(),$pk);
+    public function unsetSit(Player $player)
+    {
+        $pk1 = new RemoveActorPacket();
+        $pk1->entityUniqueId = $this->sittingPlayer[$player->getId()];
+
+        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk1);
         $player->setGenericFlag(Entity::DATA_FLAG_RIDING, false);
 
         $pk = new SetActorLinkPacket();
@@ -209,76 +207,27 @@ class SimpleLay extends PluginBase implements Listener
 
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
-    ######### SIT END ##########
 
-    public function onEntityDamage(EntityDamageEvent $event)
+    public function isCrawling(Player $player): bool
     {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof Player) {
-            if ($this->isLaying($entity)) {
-                $event->setCancelled();
-            }
-            
-            if ($event instanceof EntityDamageByEntityEvent) {
-                if ($this->isLaying($entity)) {
-                    $event->setCancelled();
-                }
-            }
-        }
+        return isset($this->crawlingPlayer[$player->getId()]);
     }
 
-    public function onPlayerSneak(PlayerToggleSneakEvent $event)
+    public function setCrawl(Player $player)
     {
-        $player = $event->getPlayer();
+        $player->setGenericFlag(Player::DATA_FLAG_SWIMMING, true); //TODO: Find better way for this
+        $this->crawlingPlayer[$player->getId()] = true;
 
-        if ($this->isLaying($player)) {
-            $this->unsetLay($player);
-        }
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("crawl-message")));
+        $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message")));
     }
 
-    public function onPlayerQuit(PlayerQuitEvent $event)
+    public function unsetCrawl(Player $player)
     {
-        $player = $event->getPlayer();
+        $player->setGenericFlag(Player::DATA_FLAG_SWIMMING, false); //TODO: Find better way for this
+        unset($this->crawlingPlayer[$player->getId()]);
 
-        if ($this->isLaying($player)) {
-            $this->unsetLay($player);
-        }
-
-        if ($this->isSitting($player)){
-            $this->unsetSit($player);
-        }
-
-    }
-
-    public function onTeleport(EntityTeleportEvent $event)
-    {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof Player) {
-            if ($this->isLaying($entity)) {
-                $this->unsetLay($entity);
-            }
-
-            if ($this->isSitting($entity)){
-                $this->unsetSit($entity);
-            }
-        }
-    }
-
-    public function onLevelChange(EntityLevelChangeEvent $event)
-    {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof Player) {
-            if ($this->isLaying($entity)) {
-                $this->unsetLay($entity);
-            }
-
-            if ($this->isSitting($entity)){
-                $this->unsetSit($entity);
-            }
-        }
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-crawl-message")));
     }
 
     public function onDisable()
@@ -286,7 +235,7 @@ class SimpleLay extends PluginBase implements Listener
         foreach ($this->getServer()->getLevels() as $level) {
             foreach ($level->getEntities() as $entity) {
                 if ($entity instanceof LayingEntity) {
-                    if (!$entity->isFlaggedForDespawn()){
+                    if (!$entity->isFlaggedForDespawn()) {
                         $entity->flagForDespawn();
                     }
                 }

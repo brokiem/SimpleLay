@@ -23,6 +23,7 @@ no-longer-crawl-message: "&6You are no longer crawling!"
 tap-sneak-button-message: "Tap the sneak button to stand up"   # <<--- [this is send tip]
 
 #----- Sit Messages -----#
-sit-already-in-use: "&cthis seat is occupied"
+sit-already-in-use: "&cThis seat is occupied"
+cannot-be-occupied: "&cYou can only sit on the Solid, Stair, or Slab block"
 #-------- -------- --------#
 ...
