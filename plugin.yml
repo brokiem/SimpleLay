@@ -1,7 +1,7 @@
 name: SimpleLay
 main: brokiem\simplelay\SimpleLay
 version: 2.0.1-beta2
-api: 3.14.0
+api: [ 3.14.0 ]
 author: brokiem
 
 mcpe-protocol: [407, 408, 418, 419, 421, 422]
@@ -15,10 +15,6 @@ commands:
     description: "sit on a block"
     permission: simplelay.sit
     usage: /lay
-  crawl:
-    description: "start crawling"
-    permission: simplelay.crawl
-    usage: /lay
   sittoggle:
     description: "toggle sit when tapping block"
     permission: simplelay.sittoggle
@@ -31,8 +27,5 @@ permissions:
   simplelay.sit:
     default: true
     description: "permission to allow the use of sit command"
-  simplelay.crawl:
-    default: true
-    description: "permission to allow the use of crawl command"
   simplelay.sittoggle:
     default: true

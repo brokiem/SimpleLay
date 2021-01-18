@@ -60,10 +60,10 @@ class EventListener implements Listener
         $block = $event->getBlock();
 
         if (!$this->plugin->isToggleSit($player)) {
-            if ($this->getConfig()->get("enable-tap-to-sit")) {
-                if ($block instanceof Slab and $this->getConfig()->getNested("enabled-block-tap.slab")) {
+            if ($this->getConfig()->get("enable-tap-to-sit", true)) {
+                if ($block instanceof Slab and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
                     $this->plugin->sit($player, $block);
-                } elseif ($block instanceof Stair and $this->getConfig()->getNested("enabled-block-tap.stair")) {
+                } elseif ($block instanceof Stair and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
                     $this->plugin->sit($player, $block);
                 }
             }
@@ -95,9 +95,9 @@ class EventListener implements Listener
             $this->plugin->unsetLay($player);
         }
 
-        if ($this->plugin->isCrawling($player)) {
+        /*if ($this->plugin->isCrawling($player)) {
             $this->plugin->unsetCrawl($player);
-        }
+        }*/
     }
 
     public function onPlayerQuit(PlayerQuitEvent $event)
@@ -112,9 +112,9 @@ class EventListener implements Listener
             $this->plugin->unsetSit($player);
         }
 
-        if ($this->plugin->isCrawling($player)) {
+        /*if ($this->plugin->isCrawling($player)) {
             $this->plugin->unsetCrawl($player);
-        }
+        }*/
     }
 
     public function onTeleport(EntityTeleportEvent $event)
@@ -159,9 +159,9 @@ class EventListener implements Listener
             $this->plugin->unsetSit($player);
         }
 
-        if ($this->plugin->isCrawling($player)) {
+        /*if ($this->plugin->isCrawling($player)) {
             $this->plugin->unsetCrawl($player);
-        }
+        }*/
     }
 
     public function onDataPacketReceive(DataPacketReceiveEvent $event)

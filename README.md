@@ -5,17 +5,17 @@
 [![Star](https://githubbadges.com/star.svg?user=brokiem&repo=SimpleLay&style=flat&color=fff&background=007ec6)](https://github.com/brokiem/SimpleLay/stargazers) <br>
 
 ### SimpleLay 2.0.0
-Added many features such as sitting, crawling, custom messages and permissions!
+Added many features such as sitting, custom messages and permissions!
 
 ### Description
-With this plugin, you can crawl, sit, and lay down wherever you want!
+
+With this plugin, you can sit and lay down wherever you want!
 
 ### Commands
 | Command | Description | Permission | Default |
 | --- | --- | --- | --- |
 | ```/lay``` | ```Lay on a block``` | ```simplelay.lay``` | ```true``` |
 | ```/sit``` | ```Sit on a block``` | ```simplelay.sit``` | ```true``` |
-| ```/crawl``` | ```Crawl on a block``` | ```simplelay.crawl``` | ```true``` |
 | ```/sittoggle``` | ```Toggle sit when tapping block``` | ```simplelay.sittoggle``` | ```true``` |
 
 ### Issues
