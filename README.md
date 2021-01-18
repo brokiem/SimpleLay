@@ -1,4 +1,4 @@
-<h1>SimpleLay<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="64" width="64" alt=""></h1><br>
+<h1>SimpleLay<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/logo.PNG" height="64" width="64" align="left" alt=""></h1><br>
 
 [![Poggit](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 [![Poggit](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
