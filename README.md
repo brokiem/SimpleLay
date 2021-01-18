@@ -16,7 +16,7 @@ With this plugin, you can crawl, sit, and lay down wherever you want!
 | ```/lay``` | ```Lay on a block``` | ```simplelay.lay``` | ```true``` |
 | ```/sit``` | ```Sit on a block``` | ```simplelay.sit``` | ```true``` |
 | ```/crawl``` | ```Crawl on a block``` | ```simplelay.crawl``` | ```true``` |
-| ```/sittoggle``` | ```toggle sit when tapping block``` | ```simplelay.sittoggle``` | ```true``` |
+| ```/sittoggle``` | ```Toggle sit when tapping block``` | ```simplelay.sittoggle``` | ```true``` |
 
 ### Issues
 Known Issues: 
