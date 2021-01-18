@@ -195,10 +195,6 @@ class SimpleLay extends PluginBase
 
     public function setSit(Player $player, array $viewers, Vector3 $pos)
     {
-        if ($this->isSitting($player)) {
-            return;
-        }
-
         $eid = Entity::$entityCount++;
 
         $pk = new AddActorPacket();
@@ -214,6 +210,10 @@ class SimpleLay extends PluginBase
 
         $this->getServer()->broadcastPacket($viewers, $pk);
         $this->getServer()->broadcastPacket($viewers, $link);
+
+        if ($this->isSitting($player)) {
+            return;
+        }
 
         $this->sittingPlayerEid[$player->getId()] = $eid;
         $this->sittingPlayer[] = $player->getLowerCaseName();

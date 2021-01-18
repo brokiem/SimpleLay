@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace brokiem\simplelay;
 
 use pocketmine\block\Slab;
+use pocketmine\block\Solid;
 use pocketmine\block\Stair;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -38,9 +39,19 @@ class EventListener implements Listener
         $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($event): void {
             foreach ($this->plugin->sittingPlayer as $playerName) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
-                $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->asVector3()->add(0, -0.5)));
+                $block = $sittingPlayer->getLevel()->getBlock($sittingPlayer->asVector3()->add(0, -0.3));
+
+                if ($block instanceof Stair or $block instanceof Slab) {
+                    $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
+                } elseif ($block instanceof Solid) {
+                    $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
+                } else {
+                    return;
+                }
+
+                $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], $pos);
             }
-        }), 40);
+        }), 30);
     }
 
     public function onInteract(PlayerInteractEvent $event)
