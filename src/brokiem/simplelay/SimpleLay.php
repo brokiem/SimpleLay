@@ -90,7 +90,7 @@ class SimpleLay extends PluginBase
                 }
                 break;
             case "sittoggle":
-                if ($this->isToggleSit($sender)){
+                if ($this->isToggleSit($sender)) {
                     $this->unsetToggleSit($sender);
                 } else {
                     $this->setToggleSit($sender);
@@ -107,9 +107,9 @@ class SimpleLay extends PluginBase
 
     public function setLay(Player $player)
     {
-        if ($this->isSitting($player)){
+        if ($this->isSitting($player)) {
             $this->unsetSit($player);
-        } elseif ($this->isCrawling($player)){
+        } elseif ($this->isCrawling($player)) {
             $this->unsetCrawl($player);
         }
 
@@ -165,7 +165,8 @@ class SimpleLay extends PluginBase
         return isset($this->sittingPlayerEid[$player->getId()]);
     }
 
-    public function sit(Player $player, Block $block){
+    public function sit(Player $player, Block $block)
+    {
         if ($block instanceof Stair or $block instanceof Slab) {
             $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
         } elseif ($block instanceof Solid) {
@@ -175,9 +176,9 @@ class SimpleLay extends PluginBase
             return;
         }
 
-        if ($this->isLaying($player)){
+        if ($this->isLaying($player)) {
             $this->unsetLay($player);
-        } elseif ($this->isCrawling($player)){
+        } elseif ($this->isCrawling($player)) {
             $this->unsetCrawl($player);
         }
 
@@ -192,7 +193,7 @@ class SimpleLay extends PluginBase
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message")));
     }
 
-    public function setSit(Player $player, array $who, Vector3 $pos)
+    public function setSit(Player $player, array $viewers, Vector3 $pos)
     {
         if ($this->isSitting($player)) {
             return;
@@ -211,8 +212,8 @@ class SimpleLay extends PluginBase
         $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
         $player->setGenericFlag(Entity::DATA_FLAG_RIDING, true);
 
-        $this->getServer()->broadcastPacket($who, $pk);
-        $this->getServer()->broadcastPacket($who, $link);
+        $this->getServer()->broadcastPacket($viewers, $pk);
+        $this->getServer()->broadcastPacket($viewers, $link);
 
         $this->sittingPlayerEid[$player->getId()] = $eid;
         $this->sittingPlayer[] = $player->getLowerCaseName();
@@ -243,9 +244,9 @@ class SimpleLay extends PluginBase
 
     public function setCrawl(Player $player)
     {
-        if ($this->isSitting($player)){
+        if ($this->isSitting($player)) {
             $this->unsetSit($player);
-        } elseif ($this->isLaying($player)){
+        } elseif ($this->isLaying($player)) {
             $this->unsetLay($player);
         }
 
@@ -269,13 +270,15 @@ class SimpleLay extends PluginBase
         return $this->toggleSit[$player->getLowerCaseName()] ?? false;
     }
 
-    public function setToggleSit(Player $player){
+    public function setToggleSit(Player $player)
+    {
         $this->toggleSit[$player->getLowerCaseName()] = true;
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("toggle-sit-message")));
     }
 
-    public function unsetToggleSit(Player $player){
+    public function unsetToggleSit(Player $player)
+    {
         $this->toggleSit[$player->getLowerCaseName()] = false;
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message")));

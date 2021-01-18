@@ -28,13 +28,15 @@ class EventListener implements Listener
     /** @var SimpleLay $plugin */
     private $plugin;
 
-    public function __construct(SimpleLay $plugin){
+    public function __construct(SimpleLay $plugin)
+    {
         $this->plugin = $plugin;
     }
 
-    public function onPlayerJoin(PlayerJoinEvent $event){
-        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($event) : void {
-            foreach ($this->plugin->sittingPlayer as $playerName){
+    public function onPlayerJoin(PlayerJoinEvent $event)
+    {
+        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($event): void {
+            foreach ($this->plugin->sittingPlayer as $playerName) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
                 $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->asVector3()->add(0, -0.5)));
             }
@@ -82,7 +84,7 @@ class EventListener implements Listener
             $this->plugin->unsetLay($player);
         }
 
-        if ($this->plugin->isCrawling($player)){
+        if ($this->plugin->isCrawling($player)) {
             $this->plugin->unsetCrawl($player);
         }
     }
@@ -99,7 +101,7 @@ class EventListener implements Listener
             $this->plugin->unsetSit($player);
         }
 
-        if ($this->plugin->isCrawling($player)){
+        if ($this->plugin->isCrawling($player)) {
             $this->plugin->unsetCrawl($player);
         }
     }
@@ -134,7 +136,8 @@ class EventListener implements Listener
         }
     }
 
-    public function onDeath(PlayerDeathEvent $event){
+    public function onDeath(PlayerDeathEvent $event)
+    {
         $player = $event->getPlayer();
 
         if ($this->plugin->isLaying($player)) {
@@ -145,7 +148,7 @@ class EventListener implements Listener
             $this->plugin->unsetSit($player);
         }
 
-        if ($this->plugin->isCrawling($player)){
+        if ($this->plugin->isCrawling($player)) {
             $this->plugin->unsetCrawl($player);
         }
     }
