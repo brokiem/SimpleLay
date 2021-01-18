@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace brokiem\simplelay\entity;
+namespace brokiem\simplelay;
 
-use brokiem\simplelay\SimpleLay;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;

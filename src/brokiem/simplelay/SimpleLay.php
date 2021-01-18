@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
-use brokiem\simplelay\entity\EventListener;
 use brokiem\simplelay\entity\LayingEntity;
 use pocketmine\block\Air;
 use pocketmine\block\Slab;
