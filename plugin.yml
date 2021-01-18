@@ -19,6 +19,10 @@ commands:
     description: "start crawling"
     permission: simplelay.crawl
     usage: /lay
+  sittoggle:
+    description: "toggle sit when tapping block"
+    permission: simplelay.sittoggle
+    usage: /sittoggle
 
 permissions:
   simplelay.lay:
@@ -30,3 +34,5 @@ permissions:
   simplelay.crawl:
     default: true
     description: "permission to allow the use of crawl command"
+  simplelay.sittoggle:
+    default: true

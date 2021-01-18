@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace brokiem\simplelay;
 
 use brokiem\simplelay\entity\LayingEntity;
-use pocketmine\block\Air;
+use pocketmine\block\Block;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
@@ -28,10 +28,16 @@ class SimpleLay extends PluginBase
     public $layingPlayer = [];
 
     /** @var array $sittingPlayer */
-    private $sittingPlayer;
+    public $sittingPlayer = [];
 
     /** @var array $crawlingPlayer */
-    private $crawlingPlayer;
+    private $crawlingPlayer = [];
+
+    /** @var int $sittingPlayerEid */
+    private $sittingPlayerEid = NULL;
+
+    /** @var array $toggleSit */
+    public $toggleSit = [];
 
     public function onEnable()
     {
@@ -73,7 +79,7 @@ class SimpleLay extends PluginBase
                 if ($this->isSitting($sender)) {
                     $this->unsetSit($sender);
                 } else {
-                    $this->setSit($sender);
+                    $this->sit($sender, $sender->getLevel()->getBlock($sender->asVector3()->add(0, -0.5)));
                 }
                 break;
             case "crawl":
@@ -81,6 +87,13 @@ class SimpleLay extends PluginBase
                     $this->unsetCrawl($sender);
                 } else {
                     $this->setCrawl($sender);
+                }
+                break;
+            case "sittoggle":
+                if ($this->isToggleSit($sender)){
+                    $this->unsetToggleSit($sender);
+                } else {
+                    $this->setToggleSit($sender);
                 }
         }
 
@@ -94,9 +107,15 @@ class SimpleLay extends PluginBase
 
     public function setLay(Player $player)
     {
+        if ($this->isSitting($player)){
+            $this->unsetSit($player);
+        } elseif ($this->isCrawling($player)){
+            $this->unsetCrawl($player);
+        }
+
         $player->saveNBT();
 
-        $pos = new Vector3($player->getX(), $player->getY() - 0.3, $player->getZ());
+        $pos = $player->asVector3()->add(0, -0.3);
 
         $nbt = Entity::createBaseNBT($player, null, $player->getYaw(), $player->getPitch());
         $nbt->setTag($player->namedtag->getTag("Skin"));
@@ -109,7 +128,7 @@ class SimpleLay extends PluginBase
         $layingEntity->setNameTag($player->getDisplayName());
         $layingEntity->spawnToAll();
 
-        $player->teleport(new Vector3($player->getX(), $player->getY() - 1, $player->getZ()));
+        $player->teleport($player->asVector3()->add(0, -1));
 
         $this->layingPlayer[$player->getId()] = $layingEntity;
 
@@ -138,36 +157,48 @@ class SimpleLay extends PluginBase
             }
         }
 
-        $player->teleport(new Vector3($player->getX(), $player->getY() + 1.2, $player->getZ()));
+        $player->teleport($player->asVector3()->add(0, 1.2));
     }
 
     public function isSitting(Player $player): bool
     {
-        return isset($this->sittingPlayer[$player->getId()]);
+        return isset($this->sittingPlayerEid[$player->getId()]);
     }
 
-    public function setSit(Player $player)
-    {
-        $eid = Entity::$entityCount++;
-        $block = $player->getLevel()->getBlock($player->asVector3()->add(0, -0.5));
-
-        if ($block instanceof Air) {
-            return;
-        }
-
+    public function sit(Player $player, Block $block){
         if ($block instanceof Stair or $block instanceof Slab) {
-            $pos = $block->add(0.5, 1.5, 0.5);
+            $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
         } elseif ($block instanceof Solid) {
-            $pos = $block->add(0.5, 2.1, 0.5);
+            $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
         } else {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied")));
             return;
+        }
+
+        if ($this->isLaying($player)){
+            $this->unsetLay($player);
+        } elseif ($this->isCrawling($player)){
+            $this->unsetCrawl($player);
         }
 
         if ($this->isSitting($player)) {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("already-in-seat")));
             return;
         }
+
+        $this->setSit($player, $this->getServer()->getOnlinePlayers(), $pos);
+
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("sit-message")));
+        $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message")));
+    }
+
+    public function setSit(Player $player, array $who, Vector3 $pos)
+    {
+        if ($this->isSitting($player)) {
+            return;
+        }
+
+        $eid = Entity::$entityCount++;
 
         $pk = new AddActorPacket();
         $pk->entityRuntimeId = $eid;
@@ -180,30 +211,28 @@ class SimpleLay extends PluginBase
         $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
         $player->setGenericFlag(Entity::DATA_FLAG_RIDING, true);
 
-        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
-        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $link);
+        $this->getServer()->broadcastPacket($who, $pk);
+        $this->getServer()->broadcastPacket($who, $link);
 
-        $this->sittingPlayer[$player->getId()] = $eid;
-
-        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("sit-message")));
-        $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message")));
+        $this->sittingPlayerEid[$player->getId()] = $eid;
+        $this->sittingPlayer[] = $player->getLowerCaseName();
     }
 
     public function unsetSit(Player $player)
     {
         $pk1 = new RemoveActorPacket();
-        $pk1->entityUniqueId = $this->sittingPlayer[$player->getId()];
-
-        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk1);
-        $player->setGenericFlag(Entity::DATA_FLAG_RIDING, false);
+        $pk1->entityUniqueId = $this->sittingPlayerEid[$player->getId()];
 
         $pk = new SetActorLinkPacket();
-        $pk->link = new EntityLink($this->sittingPlayer[$player->getId()], $player->getId(), EntityLink::TYPE_REMOVE, true, true);
+        $pk->link = new EntityLink($this->sittingPlayerEid[$player->getId()], $player->getId(), EntityLink::TYPE_REMOVE, true, true);
 
-        unset($this->sittingPlayer[$player->getId()]);
+        unset($this->sittingPlayerEid[$player->getId()]);
+        unset($this->sittingPlayer[$player->getLowerCaseName()]);
 
+        $player->setGenericFlag(Entity::DATA_FLAG_RIDING, false);
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-sit-message")));
 
+        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk1);
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
 
@@ -214,6 +243,12 @@ class SimpleLay extends PluginBase
 
     public function setCrawl(Player $player)
     {
+        if ($this->isSitting($player)){
+            $this->unsetSit($player);
+        } elseif ($this->isLaying($player)){
+            $this->unsetLay($player);
+        }
+
         $player->setGenericFlag(Player::DATA_FLAG_SWIMMING, true); //TODO: Find better way for this
         $this->crawlingPlayer[$player->getId()] = true;
 
@@ -227,6 +262,23 @@ class SimpleLay extends PluginBase
         unset($this->crawlingPlayer[$player->getId()]);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-crawl-message")));
+    }
+
+    public function isToggleSit(Player $player): bool
+    {
+        return $this->toggleSit[$player->getLowerCaseName()] ?? false;
+    }
+
+    public function setToggleSit(Player $player){
+        $this->toggleSit[$player->getLowerCaseName()] = true;
+
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("toggle-sit-message")));
+    }
+
+    public function unsetToggleSit(Player $player){
+        $this->toggleSit[$player->getLowerCaseName()] = false;
+
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message")));
     }
 
     public function onDisable()

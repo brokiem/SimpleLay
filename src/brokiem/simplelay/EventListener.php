@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
+use pocketmine\block\Slab;
+use pocketmine\block\Stair;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\Player;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\utils\Config;
 
 class EventListener implements Listener
 {
@@ -23,6 +30,31 @@ class EventListener implements Listener
 
     public function __construct(SimpleLay $plugin){
         $this->plugin = $plugin;
+    }
+
+    public function onPlayerJoin(PlayerJoinEvent $event){
+        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($event) : void {
+            foreach ($this->plugin->sittingPlayer as $playerName){
+                $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
+                $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->asVector3()->add(0, -0.5)));
+            }
+        }), 40);
+    }
+
+    public function onInteract(PlayerInteractEvent $event)
+    {
+        $player = $event->getPlayer();
+        $block = $event->getBlock();
+
+        if (!$this->plugin->isToggleSit($player)) {
+            if ($this->getConfig()->get("enable-tap-to-sit")) {
+                if ($block instanceof Slab and $this->getConfig()->getNested("enabled-block-tap.slab")) {
+                    $this->plugin->sit($player, $block);
+                } elseif ($block instanceof Stair and $this->getConfig()->getNested("enabled-block-tap.stair")) {
+                    $this->plugin->sit($player, $block);
+                }
+            }
+        }
     }
 
     public function onEntityDamage(EntityDamageEvent $event)
@@ -67,6 +99,9 @@ class EventListener implements Listener
             $this->plugin->unsetSit($player);
         }
 
+        if ($this->plugin->isCrawling($player)){
+            $this->plugin->unsetCrawl($player);
+        }
     }
 
     public function onTeleport(EntityTeleportEvent $event)
@@ -99,6 +134,22 @@ class EventListener implements Listener
         }
     }
 
+    public function onDeath(PlayerDeathEvent $event){
+        $player = $event->getPlayer();
+
+        if ($this->plugin->isLaying($player)) {
+            $this->plugin->unsetLay($player);
+        }
+
+        if ($this->plugin->isSitting($player)) {
+            $this->plugin->unsetSit($player);
+        }
+
+        if ($this->plugin->isCrawling($player)){
+            $this->plugin->unsetCrawl($player);
+        }
+    }
+
     public function onDataPacketReceive(DataPacketReceiveEvent $event)
     {
         $packet = $event->getPacket();
@@ -109,5 +160,10 @@ class EventListener implements Listener
                 $this->plugin->unsetSit($player);
             }
         }
+    }
+
+    private function getConfig(): Config
+    {
+        return $this->plugin->getConfig();
     }
 }
