@@ -3,7 +3,6 @@
 
 namespace brokiem\simplelay\entity;
 
-
 use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\level\Level;

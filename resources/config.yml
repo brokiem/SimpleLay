@@ -1,0 +1,40 @@
+---
+#----- SimpleLay Config File -----#
+# Author: @brokiem (https://github.com/brokiem)
+# Source code: https://github.com/brokiem/SimpleLay
+
+# You can use & instead of § for color code
+
+#--- Do not change this! ---#
+config-version: 1.0
+#---------------------------#
+
+#--------- ------- ---------#
+# If this is set to true, players will be able to sit by interacting to block
+enable-tap-to-sit: true
+
+# Enable tap on block, if block is true, player will be able to sit by Interact on the block
+enabled-block-tap:
+  slab: true
+  stair: true
+#--------- ------- ---------#
+
+#-------- Messages --------#
+lay-message: "&6You are now laying!"
+sit-message: "&6You are now sitting!"
+
+already-in-seat: "&6You are already sitting!"
+
+no-longer-lay-message: "&6You are no longer laying!"
+no-longer-sit-message: "&6You are no longer sitting!"
+
+toggle-sit-message: "&6You have disabled tap-on-block sit"
+untoggle-sit-message: "&6You have enabled tap-on-block sit"
+
+tap-sneak-button-message: "Tap the sneak button to stand up"   # <<--- [this is send tip]
+
+#----- Sit Messages -----#
+seat-already-in-use: "&cThis seat is occupied!"
+cannot-be-occupied: "&cYou can only sit on the Solid, Stair, or Slab block!"
+#-------- -------- --------#
+...
