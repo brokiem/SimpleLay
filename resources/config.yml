@@ -31,6 +31,9 @@ no-longer-sit-message: "&6You are no longer sitting!"
 toggle-sit-message: "&6You have disabled tap-on-block sit"
 untoggle-sit-message: "&6You have enabled tap-on-block sit"
 
+kicked-from-seat: "&cYou've been kicked from the seat!"
+kicked-from-lay: "&cYou've been kicked from laying!"
+
 tap-sneak-button-message: "Tap the sneak button to stand up"   # <<--- [this is send tip]
 
 #----- Sit Messages -----#

@@ -17,6 +17,7 @@ With this plugin, you can sit and lay down wherever you want!
 | ```/lay``` | ```Lay on a block``` | ```simplelay.lay``` | ```true``` |
 | ```/sit``` | ```Sit on a block``` | ```simplelay.sit``` | ```true``` |
 | ```/sittoggle``` | ```Toggle sit when tapping block``` | ```simplelay.sittoggle``` | ```true``` |
+| ```/skick``` | ```Kick the player from a sitting or laying location``` | ```simplelay.skick``` | ```op``` |
 
 ### Issues
 Known Issues: 

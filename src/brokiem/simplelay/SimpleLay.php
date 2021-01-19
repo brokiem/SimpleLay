@@ -97,6 +97,31 @@ class SimpleLay extends PluginBase
                 } else {
                     $this->setToggleSit($sender);
                 }
+                break;
+            case "skick":
+                if (isset($args[0])) {
+                    $player = $this->getServer()->getPlayer($args[0]);
+
+                    if ($player !== null) {
+                        if ($this->isLaying($player)) {
+                            $this->unsetLay($player);
+                            $sender->sendMessage(TextFormat::GREEN . "Successfully kicked '{$player->getName()}' from laying!");
+
+                            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("kicked-from-lay", "&cYou've been kicked from laying!")));
+                        } elseif ($this->isSitting($player)) {
+                            $this->unsetSit($player);
+                            $sender->sendMessage(TextFormat::GREEN . "Successfully kicked '{$player->getName()}' from the seat!");
+
+                            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("kicked-from-seat", "&cYou've been kicked from the seat!")));
+                        } else {
+                            $sender->sendMessage(TextFormat::RED . "Player: '{$player->getName()}' is not sitting or lying!");
+                        }
+                    } else {
+                        $sender->sendMessage(TextFormat::RED . "Player: '$args[0]' not found!");
+                    }
+                } else {
+                    return false;
+                }
         }
 
         return true;
