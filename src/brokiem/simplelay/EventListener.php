@@ -18,6 +18,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -37,19 +38,22 @@ class EventListener implements Listener
     public function onPlayerJoin(PlayerJoinEvent $event)
     {
         $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($event): void {
-            foreach ($this->plugin->sittingPlayer as $playerName) {
+            foreach ($this->plugin->sittingData as $playerName => $data) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
-                $block = $sittingPlayer->getLevel()->getBlock($sittingPlayer->asVector3()->add(0, -0.3));
 
-                if ($block instanceof Stair or $block instanceof Slab) {
-                    $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
-                } elseif ($block instanceof Solid) {
-                    $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
-                } else {
-                    return;
+                if ($sittingPlayer !== null) {
+                    $block = $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->asVector3()->add(0, -0.3));
+
+                    if ($block instanceof Stair or $block instanceof Slab) {
+                        $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
+                    } elseif ($block instanceof Solid) {
+                        $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
+                    } else {
+                        return;
+                    }
+
+                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $this->plugin->getServer()->getLevelByName($event->getPlayer()->getLevel()->getFolderName())));
                 }
-
-                $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], $pos);
             }
         }), 30);
     }
@@ -94,10 +98,6 @@ class EventListener implements Listener
         if ($this->plugin->isLaying($player)) {
             $this->plugin->unsetLay($player);
         }
-
-        /*if ($this->plugin->isCrawling($player)) {
-            $this->plugin->unsetCrawl($player);
-        }*/
     }
 
     public function onPlayerQuit(PlayerQuitEvent $event)
@@ -106,15 +106,9 @@ class EventListener implements Listener
 
         if ($this->plugin->isLaying($player)) {
             $this->plugin->unsetLay($player);
-        }
-
-        if ($this->plugin->isSitting($player)) {
+        } elseif ($this->plugin->isSitting($player)) {
             $this->plugin->unsetSit($player);
         }
-
-        /*if ($this->plugin->isCrawling($player)) {
-            $this->plugin->unsetCrawl($player);
-        }*/
     }
 
     public function onTeleport(EntityTeleportEvent $event)
@@ -124,9 +118,7 @@ class EventListener implements Listener
         if ($entity instanceof Player) {
             if ($this->plugin->isLaying($entity)) {
                 $this->plugin->unsetLay($entity);
-            }
-
-            if ($this->plugin->isSitting($entity)) {
+            } elseif ($this->plugin->isSitting($entity)) {
                 $this->plugin->unsetSit($entity);
             }
         }
@@ -139,9 +131,7 @@ class EventListener implements Listener
         if ($entity instanceof Player) {
             if ($this->plugin->isLaying($entity)) {
                 $this->plugin->unsetLay($entity);
-            }
-
-            if ($this->plugin->isSitting($entity)) {
+            } elseif ($this->plugin->isSitting($entity)) {
                 $this->plugin->unsetSit($entity);
             }
         }
@@ -153,15 +143,9 @@ class EventListener implements Listener
 
         if ($this->plugin->isLaying($player)) {
             $this->plugin->unsetLay($player);
-        }
-
-        if ($this->plugin->isSitting($player)) {
+        } elseif ($this->plugin->isSitting($player)) {
             $this->plugin->unsetSit($player);
         }
-
-        /*if ($this->plugin->isCrawling($player)) {
-            $this->plugin->unsetCrawl($player);
-        }*/
     }
 
     public function onDataPacketReceive(DataPacketReceiveEvent $event)
