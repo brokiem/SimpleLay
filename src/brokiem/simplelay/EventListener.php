@@ -54,7 +54,6 @@ class EventListener implements Listener
                     }
 
                     $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $this->plugin->getServer()->getLevelByName($event->getPlayer()->getLevel()->getFolderName())), $this->plugin->sittingData[$sittingPlayer->getLowerCaseName()]['eid']);
-                    return;
                 }
             }
         }), 30);
@@ -166,7 +165,6 @@ class EventListener implements Listener
             if ($pos->equals($this->plugin->sittingData[$playerName]["pos"])) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
                 $this->plugin->unsetSit($sittingPlayer);
-                return;
             }
         }
     }

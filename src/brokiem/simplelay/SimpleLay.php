@@ -58,7 +58,7 @@ class SimpleLay extends PluginBase
     {
         if (!$sender instanceof Player) {
             $sender->sendMessage("[SimpleLay] Use this command in game!");
-            return false;
+            return true;
         }
 
         switch (strtolower($command->getName())) {
