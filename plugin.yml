@@ -4,9 +4,11 @@ version: 2.0.1
 api: [ 3.14.0 ]
 author: brokiem
 
-mcpe-protocol: [407, 408, 418, 419, 421, 422]
+mcpe-protocol: [ 407, 408, 418, 419, 421, 422 ]
 
 commands:
+  simplelay:
+    description: "SimpleLay plugin credits and command list"
   lay:
     description: "lay on a block"
     permission: simplelay.lay
@@ -14,7 +16,7 @@ commands:
   sit:
     description: "sit on a block"
     permission: simplelay.sit
-    usage: /lay
+    usage: /sit
   sittoggle:
     description: "toggle sit when tapping block"
     permission: simplelay.sittoggle

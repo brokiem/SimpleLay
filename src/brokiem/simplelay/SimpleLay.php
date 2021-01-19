@@ -62,6 +62,11 @@ class SimpleLay extends PluginBase
         }
 
         switch (strtolower($command->getName())) {
+            case "simplelay":
+                $sender->sendMessage(
+                    "§7---- ---- [ §2Simple§aLay§7 ] ---- ----\n§bAuthor: @brokiem\n§3Source Code: github.com/brokiem/SimpleLay\n\n§eCommand List:\n§2» /lay - Lay on a block\n§2» /sit - Sit on a block\n§2» /sittoggle - Toggle sit when tapping block\n§2» /skick - Kick the player from a sitting or laying location (op)\n§7---- ---- ---- - ---- ---- ----"
+                );
+                break;
             case "lay":
                 if ($this->isLaying($sender)) {
                     $this->unsetLay($sender);
