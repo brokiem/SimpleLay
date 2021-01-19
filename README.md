@@ -26,3 +26,4 @@ For another issues, please report [here](https://github.com/brokiem/SimpleLay/is
 
 ### Images
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying2.PNG" alt="">
+<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/sit2.PNG" alt="">
