@@ -7,6 +7,7 @@ namespace brokiem\simplelay;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
+use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
@@ -52,7 +53,8 @@ class EventListener implements Listener
                         return;
                     }
 
-                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $this->plugin->getServer()->getLevelByName($event->getPlayer()->getLevel()->getFolderName())));
+                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $this->plugin->getServer()->getLevelByName($event->getPlayer()->getLevel()->getFolderName())), $this->plugin->sittingData[$sittingPlayer->getLowerCaseName()]['eid']);
+                    return;
                 }
             }
         }), 30);
@@ -145,6 +147,27 @@ class EventListener implements Listener
             $this->plugin->unsetLay($player);
         } elseif ($this->plugin->isSitting($player)) {
             $this->plugin->unsetSit($player);
+        }
+    }
+
+    public function onBlockBreak(BlockBreakEvent $event)
+    {
+        $block = $event->getBlock();
+
+        if ($block instanceof Stair or $block instanceof Slab) {
+            $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
+        } elseif ($block instanceof Solid) {
+            $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
+        } else {
+            return;
+        }
+
+        foreach ($this->plugin->sittingData as $playerName => $data) {
+            if ($pos->equals($this->plugin->sittingData[$playerName]["pos"])) {
+                $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
+                $this->plugin->unsetSit($sittingPlayer);
+                return;
+            }
         }
     }
 

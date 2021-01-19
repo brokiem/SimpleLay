@@ -196,15 +196,9 @@ class SimpleLay extends PluginBase
         }
 
         foreach ($this->sittingData as $playerName => $data) {
-            $sittingPlayer = $this->getServer()->getPlayerExact($playerName);
-
-            if ($sittingPlayer !== null) {
-                if (isset($this->sittingData[$sittingPlayer->getLowerCaseName()])) {
-                    if ($pos->equals($data['pos'])) {
-                        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("seat-already-in-use", "&cThis seat is occupied!")));
-                        return;
-                    }
-                }
+            if ($pos->equals($data['pos'])) {
+                $player->sendMessage(TextFormat::colorize($this->getConfig()->get("seat-already-in-use", "&cThis seat is occupied!")));
+                return;
             }
         }
 
@@ -219,9 +213,11 @@ class SimpleLay extends PluginBase
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
-    public function setSit(Player $player, array $viewers, Position $pos)
+    public function setSit(Player $player, array $viewers, Position $pos, int $eid = 0)
     {
-        $eid = Entity::$entityCount++;
+        if ($eid === 0) {
+            $eid = Entity::$entityCount++;
+        }
 
         $pk = new AddActorPacket();
         $pk->entityRuntimeId = $eid;
@@ -241,11 +237,9 @@ class SimpleLay extends PluginBase
             return;
         }
 
-        $this->sittingData = [
-            $player->getLowerCaseName() => [
-                'eid' => $eid,
-                'pos' => $pos
-            ]
+        $this->sittingData[$player->getLowerCaseName()] = [
+            'eid' => $eid,
+            'pos' => $pos
         ];
     }
 
