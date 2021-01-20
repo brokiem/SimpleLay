@@ -14,6 +14,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
+use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\RemoveActorPacket;
 use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
 use pocketmine\network\mcpe\protocol\types\EntityLink;
@@ -277,6 +278,18 @@ class SimpleLay extends PluginBase
         unset($this->toggleSit[$player->getLowerCaseName()]);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message", "&6You have enabled tap-on-block sit")));
+    }
+
+    public function optimizeRotation(Player $player)
+    {
+        $pk = new MoveActorAbsolutePacket();
+        $pk->position = $this->sittingData[$player->getLowerCaseName()]['pos'];
+        $pk->entityRuntimeId = $this->sittingData[$player->getLowerCaseName()]['eid'];
+        $pk->xRot = $player->getPitch();
+        $pk->yRot = $player->getYaw();
+        $pk->zRot = $player->getYaw();
+
+        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
 
     public function onDisable()

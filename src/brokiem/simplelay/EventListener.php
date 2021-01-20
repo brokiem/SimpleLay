@@ -16,6 +16,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
@@ -146,6 +147,15 @@ class EventListener implements Listener
             $this->plugin->unsetLay($player);
         } elseif ($this->plugin->isSitting($player)) {
             $this->plugin->unsetSit($player);
+        }
+    }
+
+    public function onMove(PlayerMoveEvent $event)
+    {
+        $player = $event->getPlayer();
+
+        if ($this->plugin->isSitting($player)) {
+            $this->plugin->optimizeRotation($player);
         }
     }
 
