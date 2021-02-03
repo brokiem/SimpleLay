@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay)
 [![Poggit](https://poggit.pmmp.io/shield.state/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 [![Poggit](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
-[![Star](https://githubbadges.com/star.svg?user=brokiem&repo=SimpleLay&style=flat&color=fff&background=007ec6)](https://github.com/brokiem/SimpleLay/stargazers) <br>
+[![Star](https://img.shields.io/github/stars/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay/stargazers) <br>
 
 ### SimpleLay 2.0.0
 Added many features such as sitting, custom messages and permissions!
