@@ -2,9 +2,11 @@
 build-by-default: true
 branches:
 - master
-- 2.0.0
 projects:
   SimpleLay:
     path: ""
     icon: "/assets/logo.PNG"
+    libs:
+      - src: JackMD/UpdateNotifier/UpdateNotifier
+        version: ^2.1
 ...

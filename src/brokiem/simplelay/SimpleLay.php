@@ -2,9 +2,33 @@
 
 declare(strict_types=1);
 
+/*
+ *  ____    _                       _          _
+ * / ___|  (_)  _ __ ___    _ __   | |   ___  | |       __ _   _   _
+ * \___ \  | | | '_ ` _ \  | '_ \  | |  / _ \ | |      / _` | | | | |
+ *  ___) | | | | | | | | | | |_) | | | |  __/ | |___  | (_| | | |_| |
+ * |____/  |_| |_| |_| |_| | .__/  |_|  \___| |_____|  \__,_|  \__, |
+ *                         |_|                                 |___/
+ *
+ * Copyright (C) 2020 brokiem
+ *
+ * This software is distributed under "GNU General Public License v3.0".
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License v3.0
+ * along with this program. If not, see
+ * <https://opensource.org/licenses/GPL-3.0>.
+ *
+ */
+
 namespace brokiem\simplelay;
 
 use brokiem\simplelay\entity\LayingEntity;
+use JackMD\UpdateNotifier\UpdateNotifier;
 use pocketmine\block\Block;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
@@ -37,8 +61,8 @@ class SimpleLay extends PluginBase
     public function onEnable()
     {
         $this->saveDefaultConfig();
-
         $this->checkConfig();
+        UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
 
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
@@ -153,7 +177,7 @@ class SimpleLay extends PluginBase
         $player->setScale(0.01);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("lay-message", "&6You are now laying!")));
-        $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
+        $player->sendActionBarMessage(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
     public function unsetLay(Player $player)
@@ -214,9 +238,9 @@ class SimpleLay extends PluginBase
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
-    public function setSit(Player $player, array $viewers, Position $pos, int $eid = 0)
+    public function setSit(Player $player, array $viewers, Position $pos, int $eid = null)
     {
-        if ($eid === 0) {
+        if ($eid === null) {
             $eid = Entity::$entityCount++;
         }
 
@@ -263,7 +287,7 @@ class SimpleLay extends PluginBase
 
     public function isToggleSit(Player $player): bool
     {
-        return $this->toggleSit[$player->getLowerCaseName()] ?? false;
+        return isset($this->toggleSit[$player->getLowerCaseName()]);
     }
 
     public function setToggleSit(Player $player)

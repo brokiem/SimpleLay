@@ -1,6 +1,6 @@
 name: SimpleLay
 main: brokiem\simplelay\SimpleLay
-version: 2.0.1
+version: 2.0.2
 api: [ 3.14.0 ]
 author: brokiem
 
@@ -35,6 +35,7 @@ permissions:
     description: "permission to allow the use of sit command"
   simplelay.sittoggle:
     default: true
+    description: "permission to allow the use of sittoggle command"
   simplelay.skick:
     default: op
     description: "permission to allow the use of skick command"
