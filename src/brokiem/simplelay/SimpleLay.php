@@ -10,7 +10,7 @@ declare(strict_types=1);
  * |____/  |_| |_| |_| |_| | .__/  |_|  \___| |_____|  \__,_|  \__, |
  *                         |_|                                 |___/
  *
- * Copyright (C) 2020 brokiem
+ * Copyright (C) 2020 - 2021 brokiem
  *
  * This software is distributed under "GNU General Public License v3.0".
  *
@@ -29,6 +29,7 @@ namespace brokiem\simplelay;
 
 use brokiem\simplelay\entity\LayingEntity;
 use JackMD\UpdateNotifier\UpdateNotifier;
+use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
@@ -70,12 +71,14 @@ class SimpleLay extends PluginBase
 
     private function checkConfig()
     {
-        if ($this->getConfig()->get("config-version") !== 1.0) {
+        if ($this->getConfig()->get("config-version") !== 2.0) {
             $this->getLogger()->notice("Your configuration file is outdated, updating the config.yml...");
             $this->getLogger()->notice("The old configuration file can be found at config.old.yml");
 
             rename($this->getDataFolder() . "config.yml", $this->getDataFolder() . "config.old.yml");
+
             $this->saveDefaultConfig();
+            $this->reloadConfig();
         }
     }
 
@@ -149,20 +152,32 @@ class SimpleLay extends PluginBase
 
     public function setLay(Player $player)
     {
+        $level = $player->getLevel();
+        if ($level !== null) {
+            $block = $level->getBlock($player->add(0, -0.5));
+            if ($block instanceof Air) {
+                $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
+                return;
+            }
+        } else {
+            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
+            return;
+        }
+
         if ($this->isSitting($player)) {
             $this->unsetSit($player);
+            return;
         }
 
         $player->saveNBT();
 
-        $pos = $player->asVector3()->add(0, -0.3);
-
         $nbt = Entity::createBaseNBT($player, null, $player->getYaw(), $player->getPitch());
         $nbt->setTag($player->namedtag->getTag("Skin"));
 
-        $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player);
-        $layingEntity->getDataPropertyManager()->setBlockPos(LayingEntity::DATA_PLAYER_BED_POSITION, $pos);
+        $pos = $player->asVector3()->add(0, -0.3);
+        $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player, $this);
         $layingEntity->getDataPropertyManager()->setFloat(LayingEntity::DATA_BOUNDING_BOX_HEIGHT, 0.2);
+        $layingEntity->getDataPropertyManager()->setBlockPos(LayingEntity::DATA_PLAYER_BED_POSITION, $pos);
         $layingEntity->setGenericFlag(LayingEntity::DATA_FLAG_SLEEPING, true);
 
         $layingEntity->setNameTag($player->getDisplayName());

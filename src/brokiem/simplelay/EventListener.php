@@ -10,7 +10,7 @@ declare(strict_types=1);
  * |____/  |_| |_| |_| |_| | .__/  |_|  \___| |_____|  \__,_|  \__, |
  *                         |_|                                 |___/
  *
- * Copyright (C) 2020 brokiem
+ * Copyright (C) 2020 - 2021 brokiem
  *
  * This software is distributed under "GNU General Public License v3.0".
  *
@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
+use brokiem\simplelay\entity\LayingEntity;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
@@ -34,6 +35,7 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
+use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -106,10 +108,14 @@ class EventListener implements Listener
         if ($entity instanceof Player) {
             if ($this->plugin->isLaying($entity)) {
                 $event->setCancelled();
+            } elseif ($this->plugin->isSitting($entity)) {
+                $event->setCancelled();
             }
 
             if ($event instanceof EntityDamageByEntityEvent) {
                 if ($this->plugin->isLaying($entity)) {
+                    $event->setCancelled();
+                } elseif ($this->plugin->isSitting($entity)) {
                     $event->setCancelled();
                 }
             }
@@ -197,7 +203,10 @@ class EventListener implements Listener
         foreach ($this->plugin->sittingData as $playerName => $data) {
             if ($pos->equals($this->plugin->sittingData[$playerName]["pos"])) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
-                $this->plugin->unsetSit($sittingPlayer);
+
+                if ($sittingPlayer !== null) {
+                    $this->plugin->unsetSit($sittingPlayer);
+                }
             }
         }
     }
@@ -211,6 +220,14 @@ class EventListener implements Listener
             if ($this->plugin->isSitting($player)) {
                 $this->plugin->unsetSit($player);
             }
+        }
+    }
+
+    public function onEntityMotion(EntityMotionEvent $event) {
+        $entity = $event->getEntity();
+
+        if ($entity instanceof LayingEntity) {
+            $event->setCancelled();
         }
     }
 

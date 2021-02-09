@@ -10,7 +10,7 @@ declare(strict_types=1);
  * |____/  |_| |_| |_| |_| | .__/  |_|  \___| |_____|  \__,_|  \__, |
  *                         |_|                                 |___/
  *
- * Copyright (C) 2020 brokiem
+ * Copyright (C) 2020 - 2021 brokiem
  *
  * This software is distributed under "GNU General Public License v3.0".
  *
@@ -27,6 +27,8 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\entity;
 
+use brokiem\simplelay\SimpleLay;
+use pocketmine\block\Air;
 use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\level\Level;
@@ -35,14 +37,16 @@ use pocketmine\Player;
 
 class LayingEntity extends Human
 {
-    /**
-     * @var Player
-     */
+    /** @var Player $player */
     private $player;
+    
+    /** @var SimpleLay $simplelay */
+    private $simplelay;
 
-    public function __construct(Level $level, CompoundTag $nbt, Player $player)
+    public function __construct(Level $level, CompoundTag $nbt, Player $player, SimpleLay $simpleLay)
     {
         $this->player = $player;
+        $this->simplelay = $simpleLay;
         parent::__construct($level, $nbt);
     }
 
@@ -51,6 +55,16 @@ class LayingEntity extends Human
         if ($this->isFlaggedForDespawn()) {
             return false;
         }
+
+        /* TODO: Hack!
+        $level = $this->player->getLevel();
+        if ($level !== null) {
+            $block = $level->getBlock($this->player->add(0, -0.5));
+            if (!$block instanceof Air) {
+                $this->player->teleport($this->player->add(0, 0.5));
+                $this->teleport($this->player);
+            }
+        }*/
 
         $this->getArmorInventory()->setContents($this->player->getArmorInventory()->getContents());
         $this->getInventory()->setContents($this->player->getInventory()->getContents());

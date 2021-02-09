@@ -6,7 +6,7 @@
 # You can use & instead of § for color code
 
 #--- Do not change this! ---#
-config-version: 1.0
+config-version: 2.0
 #---------------------------#
 
 #--------- ------- ---------#
@@ -34,10 +34,11 @@ untoggle-sit-message: "&6You have enabled tap-on-block sit"
 kicked-from-seat: "&cYou've been kicked from the seat!"
 kicked-from-lay: "&cYou've been kicked from laying!"
 
-tap-sneak-button-message: "Tap the sneak button to stand up"   # <<--- [this is send tip]
+tap-sneak-button-message: "Tap the sneak button to stand up"
 
-#----- Sit Messages -----#
+cannot-be-occupied-lay: "&cYou can't lay here!"
+
 seat-already-in-use: "&cThis seat is occupied!"
-cannot-be-occupied: "&cYou can only sit on the Solid, Stair, or Slab block!"
+cannot-be-occupied-sit: "&cYou can only sit on the Solid, Stair, or Slab block!"
 #-------- -------- --------#
 ...
