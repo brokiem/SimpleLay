@@ -227,7 +227,7 @@ class SimpleLay extends PluginBase
         } elseif ($block instanceof Solid) {
             $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
         } else {
-            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied", "&cYou can only sit on the Solid, Stair, or Slab block!")));
+            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-sit", "&cYou can only sit on the Solid, Stair, or Slab block!")));
             return;
         }
 
