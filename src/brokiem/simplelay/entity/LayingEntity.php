@@ -56,15 +56,7 @@ class LayingEntity extends Human
             return false;
         }
 
-        /* TODO: Hack!
-        $level = $this->player->getLevel();
-        if ($level !== null) {
-            $block = $level->getBlock($this->player->add(0, -0.5));
-            if (!$block instanceof Air) {
-                $this->player->teleport($this->player->add(0, 0.5));
-                $this->teleport($this->player);
-            }
-        }*/
+        $this->setMotion($this->player->getMotion());
 
         $this->getArmorInventory()->setContents($this->player->getArmorInventory()->getContents());
         $this->getInventory()->setContents($this->player->getInventory()->getContents());

@@ -27,7 +27,6 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
-use brokiem\simplelay\entity\LayingEntity;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
@@ -35,7 +34,6 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
-use pocketmine\event\entity\EntityMotionEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -220,14 +218,6 @@ class EventListener implements Listener
             if ($this->plugin->isSitting($player)) {
                 $this->plugin->unsetSit($player);
             }
-        }
-    }
-
-    public function onEntityMotion(EntityMotionEvent $event) {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof LayingEntity) {
-            $event->setCancelled();
         }
     }
 
