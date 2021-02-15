@@ -82,6 +82,13 @@ class SimpleLay extends PluginBase
         }
     }
 
+    /**
+     * @param CommandSender $sender
+     * @param Command $command
+     * @param string $label
+     * @param array $args
+     * @return bool
+     */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
     {
         if (!$sender instanceof Player) {
@@ -145,11 +152,18 @@ class SimpleLay extends PluginBase
         return true;
     }
 
+    /**
+     * @param Player $player
+     * @return bool
+     */
     public function isLaying(Player $player): bool
     {
         return isset($this->layingPlayer[$player->getId()]);
     }
 
+    /**
+     * @param Player $player
+     */
     public function setLay(Player $player)
     {
         $level = $player->getLevel();
@@ -195,6 +209,9 @@ class SimpleLay extends PluginBase
         $player->sendActionBarMessage(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
+    /**
+     * @param Player $player
+     */
     public function unsetLay(Player $player)
     {
         $entity = $this->layingPlayer[$player->getId()];
@@ -215,11 +232,19 @@ class SimpleLay extends PluginBase
         $player->teleport($player->asVector3()->add(0, 1.2));
     }
 
+    /**
+     * @param Player $player
+     * @return bool
+     */
     public function isSitting(Player $player): bool
     {
         return isset($this->sittingData[$player->getLowerCaseName()]);
     }
 
+    /**
+     * @param Player $player
+     * @param Block $block
+     */
     public function sit(Player $player, Block $block)
     {
         if ($block instanceof Stair or $block instanceof Slab) {
@@ -253,7 +278,13 @@ class SimpleLay extends PluginBase
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
-    public function setSit(Player $player, array $viewers, Position $pos, int $eid = null)
+    /**
+     * @param Player $player
+     * @param array $viewers
+     * @param Position $pos
+     * @param int|null $eid
+     */
+    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null)
     {
         if ($eid === null) {
             $eid = Entity::$entityCount++;
@@ -283,6 +314,9 @@ class SimpleLay extends PluginBase
         ];
     }
 
+    /**
+     * @param Player $player
+     */
     public function unsetSit(Player $player)
     {
         $pk1 = new RemoveActorPacket();
@@ -300,11 +334,18 @@ class SimpleLay extends PluginBase
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
 
+    /**
+     * @param Player $player
+     * @return bool
+     */
     public function isToggleSit(Player $player): bool
     {
         return isset($this->toggleSit[$player->getLowerCaseName()]);
     }
 
+    /**
+     * @param Player $player
+     */
     public function setToggleSit(Player $player)
     {
         $this->toggleSit[$player->getLowerCaseName()] = true;
@@ -312,6 +353,9 @@ class SimpleLay extends PluginBase
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("toggle-sit-message", "&6You have disabled tap-on-block sit!")));
     }
 
+    /**
+     * @param Player $player
+     */
     public function unsetToggleSit(Player $player)
     {
         unset($this->toggleSit[$player->getLowerCaseName()]);
@@ -319,6 +363,9 @@ class SimpleLay extends PluginBase
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message", "&6You have enabled tap-on-block sit")));
     }
 
+    /**
+     * @param Player $player
+     */
     public function optimizeRotation(Player $player)
     {
         $pk = new MoveActorAbsolutePacket();
