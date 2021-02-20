@@ -31,8 +31,6 @@ use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
 use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
@@ -98,27 +96,6 @@ class EventListener implements Listener
                     $this->plugin->sit($player, $block);
                 } elseif ($block instanceof Stair and $block->getDamage() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
                     $this->plugin->sit($player, $block);
-                }
-            }
-        }
-    }
-
-    public function onEntityDamage(EntityDamageEvent $event)
-    {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof Player) {
-            if ($this->plugin->isLaying($entity)) {
-                $event->setCancelled();
-            } elseif ($this->plugin->isSitting($entity)) {
-                $event->setCancelled();
-            }
-
-            if ($event instanceof EntityDamageByEntityEvent) {
-                if ($this->plugin->isLaying($entity)) {
-                    $event->setCancelled();
-                } elseif ($this->plugin->isSitting($entity)) {
-                    $event->setCancelled();
                 }
             }
         }

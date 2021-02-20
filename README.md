@@ -22,11 +22,10 @@ With this plugin, you can sit and lay down wherever you want!
 
 ### Issues
 Known Issues: 
-- (LAY) The player does not fall if there are no blocks under the player (No Gravity) WELP!
+- No known issues :D
 
 For another issues, please report [here](https://github.com/brokiem/SimpleLay/issues/new)
 
 ### Images
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying1.PNG" alt="">
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/sit1.PNG" alt="">
-<img src="https://github.com/brokiem/SimpleLay/blob/master/assets/sit2.PNG" alt="">
