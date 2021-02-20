@@ -66,17 +66,17 @@ class EventListener implements Listener
 
     public function onPlayerJoin(PlayerJoinEvent $event)
     {
-        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function (int $currentTick) use ($event): void {
+        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($event): void {
             foreach ($this->plugin->sittingData as $playerName => $data) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
                 if ($sittingPlayer !== null) {
-                    $block = $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->asVector3()->add(0, -0.3));
+                    $block = $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->add(0, -0.3));
 
                     if ($block instanceof Stair or $block instanceof Slab) {
-                        $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
+                        $pos = $block->add(0.5, 1.5, 0.5);
                     } elseif ($block instanceof Solid) {
-                        $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
+                        $pos = $block->add(0.5, 2.1, 0.5);
                     } else {
                         return;
                     }
@@ -194,16 +194,26 @@ class EventListener implements Listener
     {
         $block = $event->getBlock();
 
+        foreach ($this->plugin->layData as $name => $data) {
+            if ($block->equals($data["pos"])) {
+                $player = $this->plugin->getServer()->getPlayerExact($name);
+
+                if ($player !== null) {
+                    $this->plugin->unsetLay($player);
+                }
+            }
+        }
+
         if ($block instanceof Stair or $block instanceof Slab) {
-            $pos = $block->asVector3()->add(0.5, 1.5, 0.5);
+            $pos = $block->add(0.5, 1.5, 0.5);
         } elseif ($block instanceof Solid) {
-            $pos = $block->asVector3()->add(0.5, 2.1, 0.5);
+            $pos = $block->add(0.5, 2.1, 0.5);
         } else {
             return;
         }
 
         foreach ($this->plugin->sittingData as $playerName => $data) {
-            if ($pos->equals($this->plugin->sittingData[$playerName]["pos"])) {
+            if ($pos->equals($data["pos"])) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
                 if ($sittingPlayer !== null) {

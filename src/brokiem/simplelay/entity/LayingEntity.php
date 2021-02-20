@@ -28,7 +28,6 @@ declare(strict_types=1);
 namespace brokiem\simplelay\entity;
 
 use brokiem\simplelay\SimpleLay;
-use pocketmine\block\Air;
 use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\level\Level;
@@ -43,6 +42,13 @@ class LayingEntity extends Human
     /** @var SimpleLay $simplelay */
     private $simplelay;
 
+    /**
+     * LayingEntity constructor.
+     * @param Level $level
+     * @param CompoundTag $nbt
+     * @param Player $player
+     * @param SimpleLay $simpleLay
+     */
     public function __construct(Level $level, CompoundTag $nbt, Player $player, SimpleLay $simpleLay)
     {
         $this->player = $player;
@@ -55,8 +61,6 @@ class LayingEntity extends Human
         if ($this->isFlaggedForDespawn()) {
             return false;
         }
-
-        $this->setMotion($this->player->getMotion());
 
         $this->getArmorInventory()->setContents($this->player->getArmorInventory()->getContents());
         $this->getInventory()->setContents($this->player->getInventory()->getContents());
