@@ -59,7 +59,7 @@ class SimpleLay extends PluginBase
     /** @var array $sittingData */
     public $sittingData = [];
 
-    public function onEnable()
+    public function onEnable(): void
     {
         $this->saveDefaultConfig();
         $this->checkConfig();
@@ -69,7 +69,7 @@ class SimpleLay extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
 
-    private function checkConfig()
+    private function checkConfig(): void
     {
         if ($this->getConfig()->get("config-version") !== 2.0) {
             $this->getLogger()->notice("Your configuration file is outdated, updating the config.yml...");
@@ -164,7 +164,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function setLay(Player $player)
+    public function setLay(Player $player): void
     {
         $level = $player->getLevel();
         if ($level !== null) {
@@ -215,7 +215,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function unsetLay(Player $player)
+    public function unsetLay(Player $player): void
     {
         $entity = $this->layData[$player->getLowerCaseName()]["entity"];
 
@@ -248,7 +248,7 @@ class SimpleLay extends PluginBase
      * @param Player $player
      * @param Block $block
      */
-    public function sit(Player $player, Block $block)
+    public function sit(Player $player, Block $block): void
     {
         if ($block instanceof Stair or $block instanceof Slab) {
             $pos = $block->add(0.5, 1.5, 0.5);
@@ -287,7 +287,7 @@ class SimpleLay extends PluginBase
      * @param Position $pos
      * @param int|null $eid
      */
-    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null)
+    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null): void
     {
         if ($eid === null) {
             $eid = Entity::$entityCount++;
@@ -295,7 +295,7 @@ class SimpleLay extends PluginBase
 
         $pk = new AddActorPacket();
         $pk->entityRuntimeId = $eid;
-        $pk->type = AddActorPacket::LEGACY_ID_MAP_BC[Entity::WOLF]; // i love wolf
+        $pk->type = AddActorPacket::LEGACY_ID_MAP_BC[Entity::WOLF];
 
         $pk->position = $pos->asVector3();
         $pk->metadata = [Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, (1 << Entity::DATA_FLAG_IMMOBILE | 1 << Entity::DATA_FLAG_SILENT | 1 << Entity::DATA_FLAG_INVISIBLE)]];
@@ -320,7 +320,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function unsetSit(Player $player)
+    public function unsetSit(Player $player): void
     {
         $pk1 = new RemoveActorPacket();
         $pk1->entityUniqueId = $this->sittingData[$player->getLowerCaseName()]['eid'];
@@ -349,7 +349,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function setToggleSit(Player $player)
+    public function setToggleSit(Player $player): void
     {
         $this->toggleSit[] = $player->getLowerCaseName();
 
@@ -359,7 +359,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function unsetToggleSit(Player $player)
+    public function unsetToggleSit(Player $player): void
     {
         unset($this->toggleSit[$player->getLowerCaseName()]);
 
@@ -369,7 +369,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function optimizeRotation(Player $player)
+    public function optimizeRotation(Player $player): void
     {
         $pk = new MoveActorAbsolutePacket();
         $pk->position = $this->sittingData[$player->getLowerCaseName()]['pos'];
@@ -381,7 +381,7 @@ class SimpleLay extends PluginBase
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
 
-    public function onDisable()
+    public function onDisable(): void
     {
         foreach ($this->getServer()->getLevels() as $level) {
             foreach ($level->getEntities() as $entity) {

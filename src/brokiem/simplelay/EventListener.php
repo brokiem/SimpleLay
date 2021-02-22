@@ -62,7 +62,7 @@ class EventListener implements Listener
         $this->plugin = $plugin;
     }
 
-    public function onPlayerJoin(PlayerJoinEvent $event)
+    public function onPlayerJoin(PlayerJoinEvent $event): void
     {
         $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($event): void {
             foreach ($this->plugin->sittingData as $playerName => $data) {
@@ -85,7 +85,7 @@ class EventListener implements Listener
         }), 30);
     }
 
-    public function onInteract(PlayerInteractEvent $event)
+    public function onInteract(PlayerInteractEvent $event): void
     {
         $player = $event->getPlayer();
         $block = $event->getBlock();
@@ -101,7 +101,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onPlayerSneak(PlayerToggleSneakEvent $event)
+    public function onPlayerSneak(PlayerToggleSneakEvent $event): void
     {
         $player = $event->getPlayer();
 
@@ -110,7 +110,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onPlayerQuit(PlayerQuitEvent $event)
+    public function onPlayerQuit(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
 
@@ -121,7 +121,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onTeleport(EntityTeleportEvent $event)
+    public function onTeleport(EntityTeleportEvent $event): void
     {
         $entity = $event->getEntity();
 
@@ -134,7 +134,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onLevelChange(EntityLevelChangeEvent $event)
+    public function onLevelChange(EntityLevelChangeEvent $event): void
     {
         $entity = $event->getEntity();
 
@@ -147,7 +147,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onDeath(PlayerDeathEvent $event)
+    public function onDeath(PlayerDeathEvent $event): void
     {
         $player = $event->getPlayer();
 
@@ -158,7 +158,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onMove(PlayerMoveEvent $event)
+    public function onMove(PlayerMoveEvent $event): void
     {
         $player = $event->getPlayer();
 
@@ -167,7 +167,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onBlockBreak(BlockBreakEvent $event)
+    public function onBlockBreak(BlockBreakEvent $event): void
     {
         $block = $event->getBlock();
 
@@ -200,7 +200,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onDataPacketReceive(DataPacketReceiveEvent $event)
+    public function onDataPacketReceive(DataPacketReceiveEvent $event): void
     {
         $packet = $event->getPacket();
         $player = $event->getPlayer();

@@ -38,7 +38,7 @@ class LayingEntity extends Human
 {
     /** @var Player $player */
     private $player;
-    
+
     /** @var SimpleLay $simplelay */
     private $simplelay;
 
