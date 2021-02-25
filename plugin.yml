@@ -1,7 +1,7 @@
 name: SimpleLay
 main: brokiem\simplelay\SimpleLay
 version: 2.1.0
-api: [ 3.14.0 ]
+api: [ 4.0.0 ]
 author: brokiem
 
 mcpe-protocol: [ 407, 408, 418, 419, 421, 422 ]
