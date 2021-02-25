@@ -39,6 +39,6 @@ tap-sneak-button-message: "Tap the sneak button to stand up"
 cannot-be-occupied-lay: "&cYou can't lay here!"
 
 seat-already-in-use: "&cThis seat is occupied!"
-cannot-be-occupied-sit: "&cYou can only sit on the Solid, Stair, or Slab block!"
+cannot-be-occupied-sit: "&cYou can only sit on the Opaque, Stair, or Slab block!"
 #-------- -------- --------#
 ...

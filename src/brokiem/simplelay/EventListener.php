@@ -28,7 +28,7 @@ declare(strict_types=1);
 namespace brokiem\simplelay;
 
 use pocketmine\block\Slab;
-use pocketmine\block\Opaque as Solid;
+use pocketmine\block\Opaque;
 use pocketmine\block\Stair;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
@@ -72,7 +72,7 @@ class EventListener implements Listener
 
                     if ($block instanceof Stair or $block instanceof Slab) {
                         $pos = $block->getPos()->add(0.5, 1.5, 0.5);
-                    } elseif ($block instanceof Solid) {
+                    } elseif ($block instanceof Opaque) {
                         $pos = $block->getPos()->add(0.5, 2.1, 0.5);
                     } else {
                         return;
@@ -185,7 +185,7 @@ class EventListener implements Listener
 
         if ($block instanceof Stair or $block instanceof Slab) {
             $pos = $block->getPos()->add(0.5, 1.5, 0.5);
-        } elseif ($block instanceof Solid) {
+        } elseif ($block instanceof Opaque) {
             $pos = $block->getPos()->add(0.5, 2.1, 0.5);
         } else {
             return;

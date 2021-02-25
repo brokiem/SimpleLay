@@ -36,7 +36,7 @@ use pocketmine\block\Stair;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
-use pocketmine\block\Opaque as Solid;
+use pocketmine\block\Opaque;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
@@ -270,10 +270,10 @@ class SimpleLay extends PluginBase
     {
         if ($block instanceof Stair or $block instanceof Slab) {
             $pos = $block->getPos()->add(0.5, 1.5, 0.5);
-        } elseif ($block instanceof Solid) {
+        } elseif ($block instanceof Opaque) {
             $pos = $block->getPos()->add(0.5, 2.1, 0.5);
         } else {
-            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-sit", "&cYou can only sit on the Solid, Stair, or Slab block!")));
+            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-sit", "&cYou can only sit on the Opaque, Stair, or Slab block!")));
             return;
         }
 
