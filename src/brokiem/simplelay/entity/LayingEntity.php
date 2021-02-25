@@ -29,31 +29,33 @@ namespace brokiem\simplelay\entity;
 
 use brokiem\simplelay\SimpleLay;
 use pocketmine\entity\Human;
+use pocketmine\entity\Location;
+use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class LayingEntity extends Human
 {
     /** @var Player $player */
-    private $player;
+    private Player $player;
 
     /** @var SimpleLay $simplelay */
-    private $simplelay;
+    private SimpleLay $simplelay;
 
     /**
      * LayingEntity constructor.
-     * @param Level $level
-     * @param CompoundTag $nbt
+     * @param Location $location
+     * @param Skin $skin
+     * @param CompoundTag|null $nbt
      * @param Player $player
      * @param SimpleLay $simpleLay
      */
-    public function __construct(Level $level, CompoundTag $nbt, Player $player, SimpleLay $simpleLay)
+    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt, Player $player, SimpleLay $simpleLay)
     {
         $this->player = $player;
         $this->simplelay = $simpleLay;
-        parent::__construct($level, $nbt);
+        parent::__construct($location, $skin, $nbt);
     }
 
     public function onUpdate(int $currentTick): bool

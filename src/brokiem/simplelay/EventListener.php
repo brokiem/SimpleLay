@@ -28,10 +28,9 @@ declare(strict_types=1);
 namespace brokiem\simplelay;
 
 use pocketmine\block\Slab;
-use pocketmine\block\Solid;
+use pocketmine\block\Opaque as Solid;
 use pocketmine\block\Stair;
 use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -41,17 +40,17 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\InteractPacket;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
+use pocketmine\world\Position;
 
 class EventListener implements Listener
 {
 
     /** @var SimpleLay $plugin */
-    private $plugin;
+    private SimpleLay $plugin;
 
     /**
      * EventListener constructor.
@@ -69,17 +68,17 @@ class EventListener implements Listener
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
                 if ($sittingPlayer !== null) {
-                    $block = $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->add(0, -0.3));
+                    $block = $sittingPlayer->getWorld()->getBlock($sittingPlayer->getPosition()->add(0, -0.3, 0));
 
                     if ($block instanceof Stair or $block instanceof Slab) {
-                        $pos = $block->add(0.5, 1.5, 0.5);
+                        $pos = $block->getPos()->add(0.5, 1.5, 0.5);
                     } elseif ($block instanceof Solid) {
-                        $pos = $block->add(0.5, 2.1, 0.5);
+                        $pos = $block->getPos()->add(0.5, 2.1, 0.5);
                     } else {
                         return;
                     }
 
-                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $sittingPlayer->getLevel()), $this->plugin->sittingData[$sittingPlayer->getLowerCaseName()]['eid']);
+                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $sittingPlayer->getWorld()), $this->plugin->sittingData[strtolower($sittingPlayer->getName())]['eid']);
                 }
             }
         }), 30);
@@ -92,9 +91,9 @@ class EventListener implements Listener
 
         if (!$this->plugin->isToggleSit($player)) {
             if ($this->getConfig()->get("enable-tap-to-sit", true)) {
-                if ($block instanceof Slab and $block->getDamage() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
+                if ($block instanceof Slab and $block->getMeta() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
                     $this->plugin->sit($player, $block);
-                } elseif ($block instanceof Stair and $block->getDamage() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
+                } elseif ($block instanceof Stair and $block->getMeta() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
                     $this->plugin->sit($player, $block);
                 }
             }
@@ -134,7 +133,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onLevelChange(EntityLevelChangeEvent $event): void
+    /*public function onLevelChange(EntityLevelChangeEvent $event): void
     {
         $entity = $event->getEntity();
 
@@ -146,6 +145,9 @@ class EventListener implements Listener
             }
         }
     }
+
+    What is this?
+    */
 
     public function onDeath(PlayerDeathEvent $event): void
     {
@@ -172,7 +174,7 @@ class EventListener implements Listener
         $block = $event->getBlock();
 
         foreach ($this->plugin->layData as $name => $data) {
-            if ($block->equals($data["pos"])) {
+            if ($block->getPos()->equals($data["pos"])) {
                 $player = $this->plugin->getServer()->getPlayerExact($name);
 
                 if ($player !== null) {
@@ -182,9 +184,9 @@ class EventListener implements Listener
         }
 
         if ($block instanceof Stair or $block instanceof Slab) {
-            $pos = $block->add(0.5, 1.5, 0.5);
+            $pos = $block->getPos()->add(0.5, 1.5, 0.5);
         } elseif ($block instanceof Solid) {
-            $pos = $block->add(0.5, 2.1, 0.5);
+            $pos = $block->getPos()->add(0.5, 2.1, 0.5);
         } else {
             return;
         }
@@ -203,7 +205,7 @@ class EventListener implements Listener
     public function onDataPacketReceive(DataPacketReceiveEvent $event): void
     {
         $packet = $event->getPacket();
-        $player = $event->getPlayer();
+        $player = $event->getOrigin()->getPlayer();
 
         if ($packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE) {
             if ($this->plugin->isSitting($player)) {
