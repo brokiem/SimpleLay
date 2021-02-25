@@ -72,7 +72,7 @@ class SimpleLay extends PluginBase
         $this->checkConfig();
         //UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
 
-        EntityFactory::getInstance()->register(LayingEntity::class, ["LayingEntity"]);
+        //EntityFactory::getInstance()->register(LayingEntity::class, ["LayingEntity"]);
 
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
@@ -213,6 +213,7 @@ class SimpleLay extends PluginBase
         $layingEntity->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::SLEEPING, true);
 
         $layingEntity->setNameTag($player->getDisplayName());
+
         $layingEntity->spawnToAll();
 
         $player->teleport($player->getPosition()->add(0, -0.5, 0));
@@ -313,7 +314,7 @@ class SimpleLay extends PluginBase
 
         $pk = new AddActorPacket();
         $pk->entityRuntimeId = $eid;
-        $pk->type = EntityIds::WOLF;
+        $pk->type = "minecraft:wolf"; // help me
 
         $pk->position = $pos->asVector3();
         $pk->metadata = [EntityMetadataProperties::FLAGS => [EntityMetadataTypes::LONG, (1 << EntityMetadataFlags::IMMOBILE | 1 << EntityMetadataFlags::SILENT | 1 << EntityMetadataFlags::INVISIBLE)]];
