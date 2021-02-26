@@ -31,6 +31,7 @@ use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
 use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
@@ -195,6 +196,18 @@ class EventListener implements Listener
 
                 if ($sittingPlayer !== null) {
                     $this->plugin->unsetSit($sittingPlayer);
+                }
+            }
+        }
+    }
+
+    public function onDamageEvent(EntityDamageEvent $event) {
+        $entity = $event->getEntity();
+
+        if ($entity instanceof Player) {
+            if ($this->plugin->isLaying($entity)) {
+                if ($event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION) {
+                    $event->setCancelled();
                 }
             }
         }

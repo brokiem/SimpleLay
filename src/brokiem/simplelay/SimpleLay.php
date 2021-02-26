@@ -361,7 +361,7 @@ class SimpleLay extends PluginBase
      */
     public function unsetToggleSit(Player $player): void
     {
-        unset($this->toggleSit[$player->getLowerCaseName()]);
+        unset($this->toggleSit[array_search($player->getLowerCaseName(), $this->toggleSit)]);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message", "&6You have enabled tap-on-block sit")));
     }
