@@ -200,7 +200,7 @@ class SimpleLay extends PluginBase
         $layingEntity->setNameTag($player->getDisplayName());
         $layingEntity->spawnToAll();
 
-        $player->teleport($player->add(0, -0.5));
+        $player->teleport($player->add(0, -1));
 
         $this->layData[$player->getLowerCaseName()] = [
             "entity" => $layingEntity,
