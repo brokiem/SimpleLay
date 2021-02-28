@@ -5,6 +5,7 @@ api: [ 3.14.0 ]
 author: brokiem
 
 mcpe-protocol: [ 407, 408, 418, 419, 421, 422 ]
+website: "https://github.com/brokiem/SimpleLay/"
 
 commands:
   simplelay:
