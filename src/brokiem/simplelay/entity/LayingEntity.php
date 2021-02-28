@@ -27,7 +27,6 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\entity;
 
-use brokiem\simplelay\SimpleLay;
 use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\level\Level;
