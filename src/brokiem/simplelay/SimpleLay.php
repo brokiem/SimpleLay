@@ -31,6 +31,7 @@ use brokiem\simplelay\entity\LayingEntity;
 use JackMD\UpdateNotifier\UpdateNotifier;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
+use pocketmine\block\Liquid;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
@@ -138,7 +139,7 @@ class SimpleLay extends PluginBase
 
                             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("kicked-from-seat", "&cYou've been kicked from the seat!")));
                         } else {
-                            $sender->sendMessage(TextFormat::RED . "Player: '{$player->getName()}' is not sitting or lying!");
+                            $sender->sendMessage(TextFormat::RED . "Player: '{$player->getName()}' is not sitting or laying!");
                         }
                     } else {
                         $sender->sendMessage(TextFormat::RED . "Player: '$args[0]' not found!");
@@ -168,7 +169,7 @@ class SimpleLay extends PluginBase
         $level = $player->getLevel();
         if ($level !== null) {
             $block = $level->getBlock($player->add(0, -0.5));
-            if ($block instanceof Air) {
+            if ($block instanceof Air or $block instanceof Liquid) {
                 $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
                 return;
             }
