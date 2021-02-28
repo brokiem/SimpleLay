@@ -190,6 +190,7 @@ class SimpleLay extends PluginBase
 
         $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player);
         if ($layingEntity === null) {
+            $player->sendMessage(TextFormat::RED . "Error occurred! LayingEntity is null");
             return;
         }
 
