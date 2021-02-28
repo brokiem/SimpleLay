@@ -188,10 +188,13 @@ class SimpleLay extends PluginBase
         $nbt = Entity::createBaseNBT($player, null, $player->getYaw(), $player->getPitch());
         $nbt->setTag($player->namedtag->getTag("Skin"));
 
-        $pos = $player->add(0, -0.3);
-        $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player, $this);
+        $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player);
+        if ($layingEntity === null) {
+            return;
+        }
+
         $layingEntity->getDataPropertyManager()->setFloat(LayingEntity::DATA_BOUNDING_BOX_HEIGHT, 0.2);
-        $layingEntity->getDataPropertyManager()->setBlockPos(LayingEntity::DATA_PLAYER_BED_POSITION, $pos);
+        $layingEntity->getDataPropertyManager()->setBlockPos(LayingEntity::DATA_PLAYER_BED_POSITION, $player->add(0, -0.3));
         $layingEntity->setGenericFlag(LayingEntity::DATA_FLAG_SLEEPING, true);
 
         $layingEntity->setNameTag($player->getDisplayName());
@@ -226,10 +229,8 @@ class SimpleLay extends PluginBase
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-lay-message", "&6You are no longer laying!")));
         unset($this->layData[$player->getLowerCaseName()]);
 
-        if ($entity instanceof LayingEntity) {
-            if (!$entity->isFlaggedForDespawn()) {
-                $entity->flagForDespawn();
-            }
+        if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+            $entity->flagForDespawn();
         }
 
         $player->teleport($player->add(0, 1.2));
@@ -275,7 +276,7 @@ class SimpleLay extends PluginBase
             return;
         }
 
-        $this->setSit($player, $this->getServer()->getOnlinePlayers(), new Position($pos->x, $pos->y, $pos->z, $this->getServer()->getLevelByName($player->getLevel()->getFolderName())));
+        $this->setSit($player, $this->getServer()->getOnlinePlayers(), new Position($pos->x, $pos->y, $pos->z, $this->getServer()->getLevelByName($player->getLevelNonNull()->getFolderName())));
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("sit-message", "&6You are now sitting!")));
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
@@ -343,7 +344,7 @@ class SimpleLay extends PluginBase
      */
     public function isToggleSit(Player $player): bool
     {
-        return in_array($player->getLowerCaseName(), $this->toggleSit);
+        return in_array($player->getLowerCaseName(), $this->toggleSit, true);
     }
 
     /**
@@ -361,7 +362,7 @@ class SimpleLay extends PluginBase
      */
     public function unsetToggleSit(Player $player): void
     {
-        unset($this->toggleSit[array_search($player->getLowerCaseName(), $this->toggleSit)]);
+        unset($this->toggleSit[array_search($player->getLowerCaseName(), $this->toggleSit, true)]);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message", "&6You have enabled tap-on-block sit")));
     }
@@ -385,10 +386,8 @@ class SimpleLay extends PluginBase
     {
         foreach ($this->getServer()->getLevels() as $level) {
             foreach ($level->getEntities() as $entity) {
-                if ($entity instanceof LayingEntity) {
-                    if (!$entity->isFlaggedForDespawn()) {
-                        $entity->flagForDespawn();
-                    }
+                if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+                    $entity->flagForDespawn();
                 }
             }
         }
