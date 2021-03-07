@@ -7,9 +7,18 @@ use brokiem\simplelay\SimpleLay;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\Player;
+use pocketmine\plugin\Plugin;
 
 class SitToggleCommand extends PluginCommand
 {
+
+    /**
+     * @return SimpleLay
+     */
+    public function getPlugin(): Plugin
+    {
+        return parent::getPlugin();
+    }
 
     public function __construct(string $name, SimpleLay $owner)
     {
