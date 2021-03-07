@@ -53,5 +53,4 @@ class SKickCommand extends PluginCommand
 
         return parent::execute($sender, $commandLabel, $args);
     }
-
 }
