@@ -7,26 +7,6 @@ author: brokiem
 mcpe-protocol: [ 407, 408, 418, 419, 421, 422 ]
 website: "https://github.com/brokiem/SimpleLay/"
 
-commands:
-  simplelay:
-    description: "SimpleLay plugin credits and command list"
-  lay:
-    description: "lay on a block"
-    permission: simplelay.lay
-    usage: /lay
-  sit:
-    description: "sit on a block"
-    permission: simplelay.sit
-    usage: /sit
-  sittoggle:
-    description: "toggle sit when tapping block"
-    permission: simplelay.sittoggle
-    usage: /sittoggle
-  skick:
-    description: "kick the player from a sitting or laying location"
-    permission: simplelay.skick
-    usage: /skick <player>
-
 permissions:
   simplelay.lay:
     default: true

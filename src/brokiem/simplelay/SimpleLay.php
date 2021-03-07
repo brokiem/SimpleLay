@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
+use brokiem\simplelay\command\CommandManager;
 use brokiem\simplelay\entity\LayingEntity;
 use JackMD\UpdateNotifier\UpdateNotifier;
 use pocketmine\block\Air;
@@ -35,8 +36,6 @@ use pocketmine\block\Liquid;
 use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
@@ -64,8 +63,9 @@ class SimpleLay extends PluginBase
     {
         $this->saveDefaultConfig();
         $this->checkConfig();
-        UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
 
+        CommandManager::init($this);
+        UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
@@ -80,76 +80,6 @@ class SimpleLay extends PluginBase
 
             $this->reloadConfig();
         }
-    }
-
-    /**
-     * @param CommandSender $sender
-     * @param Command $command
-     * @param string $label
-     * @param array $args
-     * @return bool
-     */
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
-    {
-        if (!$sender instanceof Player) {
-            $sender->sendMessage("[SimpleLay] Use this command in game!");
-            return true;
-        }
-
-        switch (strtolower($command->getName())) {
-            case "simplelay":
-                $sender->sendMessage(
-                    "§7---- ---- [ §2Simple§aLay§7 ] ---- ----\n§bAuthor: @brokiem\n§3Source Code: github.com/brokiem/SimpleLay\nVersion " . $this->getDescription()->getVersion() . "\n\n§eCommand List:\n§2» /lay - Lay on a block\n§2» /sit - Sit on a block\n§2» /sittoggle - Toggle sit when tapping block\n§2» /skick - Kick the player from a sitting or laying location (op)\n§7---- ---- ---- - ---- ---- ----"
-                );
-                break;
-            case "lay":
-                if ($this->isLaying($sender)) {
-                    $this->unsetLay($sender);
-                } else {
-                    $this->setLay($sender);
-                }
-                break;
-            case "sit":
-                if ($this->isSitting($sender)) {
-                    $this->unsetSit($sender);
-                } else {
-                    $this->sit($sender, $sender->getLevelNonNull()->getBlock($sender->asPosition()->add(0, -0.5)));
-                }
-                break;
-            case "sittoggle":
-                if ($this->isToggleSit($sender)) {
-                    $this->unsetToggleSit($sender);
-                } else {
-                    $this->setToggleSit($sender);
-                }
-                break;
-            case "skick":
-                if (isset($args[0])) {
-                    $player = $this->getServer()->getPlayer($args[0]);
-
-                    if ($player !== null) {
-                        if ($this->isLaying($player)) {
-                            $this->unsetLay($player);
-                            $sender->sendMessage(TextFormat::GREEN . "Successfully kicked '{$player->getName()}' from laying!");
-
-                            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("kicked-from-lay", "&cYou've been kicked from laying!")));
-                        } elseif ($this->isSitting($player)) {
-                            $this->unsetSit($player);
-                            $sender->sendMessage(TextFormat::GREEN . "Successfully kicked '{$player->getName()}' from the seat!");
-
-                            $player->sendMessage(TextFormat::colorize($this->getConfig()->get("kicked-from-seat", "&cYou've been kicked from the seat!")));
-                        } else {
-                            $sender->sendMessage(TextFormat::RED . "Player: '{$player->getName()}' is not sitting or laying!");
-                        }
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "Player: '$args[0]' not found!");
-                    }
-                } else {
-                    return false;
-                }
-        }
-
-        return true;
     }
 
     /**
