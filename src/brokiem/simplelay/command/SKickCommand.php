@@ -7,19 +7,10 @@ use brokiem\simplelay\SimpleLay;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\Player;
-use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat;
 
 class SKickCommand extends PluginCommand
 {
-
-    /**
-     * @return SimpleLay
-     */
-    public function getPlugin(): Plugin
-    {
-        return parent::getPlugin();
-    }
 
     public function __construct(string $name, SimpleLay $owner)
     {
