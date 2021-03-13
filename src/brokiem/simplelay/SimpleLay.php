@@ -120,7 +120,7 @@ class SimpleLay extends PluginBase
 
         $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player);
 
-        if ($layingEntity instanceof LayingEntity) {
+        if (!$layingEntity instanceof LayingEntity) {
             return;
         }
 
