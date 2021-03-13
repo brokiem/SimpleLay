@@ -61,12 +61,12 @@ class SimpleLay extends PluginBase
 
     public function onEnable(): void
     {
-        $this->saveDefaultConfig();
-        $this->checkConfig();
-
         CommandManager::init($this);
         UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
+
+        $this->saveDefaultConfig();
+        $this->checkConfig();
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
 
@@ -119,8 +119,8 @@ class SimpleLay extends PluginBase
         $nbt->setTag($player->namedtag->getTag("Skin"));
 
         $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player);
-        if ($layingEntity === null) {
-            $player->sendMessage(TextFormat::RED . "Error occurred! LayingEntity is null");
+
+        if ($layingEntity instanceof LayingEntity) {
             return;
         }
 

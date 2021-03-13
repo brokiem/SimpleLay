@@ -6,7 +6,6 @@ namespace brokiem\simplelay\command;
 use brokiem\simplelay\SimpleLay;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
-use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
 class SKickCommand extends PluginCommand
@@ -22,11 +21,6 @@ class SKickCommand extends PluginCommand
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {
-        if (!$sender instanceof Player) {
-            $sender->sendMessage("[SimpleLay] Use this command in game!");
-            return true;
-        }
-
         if (isset($args[0])) {
             $player = $this->getPlugin()->getServer()->getPlayer($args[0]);
 

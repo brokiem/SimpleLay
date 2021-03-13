@@ -46,8 +46,9 @@ class LayingEntity extends Human
      */
     public function __construct(Level $level, CompoundTag $nbt, Player $player)
     {
-        $this->player = $player;
         parent::__construct($level, $nbt);
+        $this->player = $player;
+        $this->setCanSaveWithChunk(false);
     }
 
     public function onUpdate(int $currentTick): bool
