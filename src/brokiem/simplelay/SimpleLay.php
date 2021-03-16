@@ -128,6 +128,7 @@ class SimpleLay extends PluginBase
         $layingEntity->getDataPropertyManager()->setBlockPos(LayingEntity::DATA_PLAYER_BED_POSITION, $player->add(0, -0.3));
         $layingEntity->setGenericFlag(LayingEntity::DATA_FLAG_SLEEPING, true);
 
+        $layingEntity->setCanSaveWithChunk(false);
         $layingEntity->setNameTag($player->getDisplayName());
         $layingEntity->spawnToAll();
 

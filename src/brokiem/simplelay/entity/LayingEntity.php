@@ -48,7 +48,6 @@ class LayingEntity extends Human
     {
         parent::__construct($level, $nbt);
         $this->player = $player;
-        $this->setCanSaveWithChunk(false);
     }
 
     public function onUpdate(int $currentTick): bool

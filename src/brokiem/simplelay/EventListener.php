@@ -80,10 +80,10 @@ class EventListener implements Listener
                         return;
                     }
 
-                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $sittingPlayer->getLevel()), $this->plugin->sittingData[$sittingPlayer->getLowerCaseName()]['eid']);
+                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $sittingPlayer->getLevel()), $data['eid']);
                 }
             }
-        }), 30);
+        }), 40);
     }
 
     public function onInteract(PlayerInteractEvent $event): void
