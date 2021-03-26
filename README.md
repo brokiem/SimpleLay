@@ -15,6 +15,7 @@ With this plugin, you can sit and lay down wherever you want!
 ### Commands
 | Command | Description | Permission | Default |
 | --- | --- | --- | --- |
+| ```/simplelay reload``` | ```Reload the plugin cofig``` | ```simplelay.rldcfg``` | ```op``` |
 | ```/lay``` | ```Lay on a block``` | ```simplelay.lay``` | ```true``` |
 | ```/sit``` | ```Sit on a block``` | ```simplelay.sit``` | ```true``` |
 | ```/sittoggle``` | ```Toggle sit when tapping block``` | ```simplelay.sittoggle``` | ```true``` |

@@ -6,6 +6,7 @@ namespace brokiem\simplelay\command;
 use brokiem\simplelay\SimpleLay;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
+use pocketmine\utils\TextFormat;
 
 class SimpleLayCommand extends PluginCommand
 {
@@ -19,6 +20,12 @@ class SimpleLayCommand extends PluginCommand
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {
         if (!$this->testPermission($sender)) {
+            return true;
+        }
+
+        if (isset($args[1]) and ($args[1] === "reload") and $sender->hasPermission("simplelay.rldcfg")) {
+            $this->getPlugin()->reloadConfig();
+            $sender->sendMessage(TextFormat::GREEN . "SimpleLay config reloaded successfully!");
             return true;
         }
 
