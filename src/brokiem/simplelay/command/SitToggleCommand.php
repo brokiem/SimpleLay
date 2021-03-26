@@ -20,6 +20,10 @@ class SitToggleCommand extends PluginCommand
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {
+        if (!$this->testPermission($sender)) {
+            return true;
+        }
+
         if (!$sender instanceof Player) {
             $sender->sendMessage("[SimpleLay] Use this command in game!");
             return true;

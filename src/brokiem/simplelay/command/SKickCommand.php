@@ -21,6 +21,10 @@ class SKickCommand extends PluginCommand
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool
     {
+        if (!$this->testPermission($sender)) {
+            return true;
+        }
+
         if (isset($args[0])) {
             $player = $this->getPlugin()->getServer()->getPlayer($args[0]);
 
