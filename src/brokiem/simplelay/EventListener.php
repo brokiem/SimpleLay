@@ -48,8 +48,7 @@ use pocketmine\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
 
-class EventListener implements Listener
-{
+class EventListener implements Listener {
 
     /** @var SimpleLay $plugin */
     private $plugin;
@@ -58,25 +57,23 @@ class EventListener implements Listener
      * EventListener constructor.
      * @param SimpleLay $plugin
      */
-    public function __construct(SimpleLay $plugin)
-    {
+    public function __construct(SimpleLay $plugin){
         $this->plugin = $plugin;
     }
 
-    public function onPlayerJoin(PlayerJoinEvent $event): void
-    {
-        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($event): void {
-            foreach ($this->plugin->sittingData as $playerName => $data) {
+    public function onPlayerJoin(PlayerJoinEvent $event): void{
+        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($event): void{
+            foreach($this->plugin->sittingData as $playerName => $data){
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
-                if ($sittingPlayer !== null) {
+                if($sittingPlayer !== null){
                     $block = $sittingPlayer->getLevelNonNull()->getBlock($sittingPlayer->add(0, -0.3));
 
-                    if ($block instanceof Stair or $block instanceof Slab) {
+                    if($block instanceof Stair or $block instanceof Slab){
                         $pos = $block->add(0.5, 1.5, 0.5);
-                    } elseif ($block instanceof Solid) {
+                    }elseif($block instanceof Solid){
                         $pos = $block->add(0.5, 2.1, 0.5);
-                    } else {
+                    }else{
                         return;
                     }
 
@@ -86,134 +83,124 @@ class EventListener implements Listener
         }), 40);
     }
 
-    public function onInteract(PlayerInteractEvent $event): void
-    {
+    public function onInteract(PlayerInteractEvent $event): void{
         $player = $event->getPlayer();
         $block = $event->getBlock();
 
-        if (!$this->plugin->isToggleSit($player) && $this->getConfig()->get("enable-tap-to-sit", true)) {
-            if ($block instanceof Slab and $block->getDamage() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
+        if(!$this->plugin->isToggleSit($player) && $this->getConfig()->get("enable-tap-to-sit", true)){
+            if($block instanceof Slab and $block->getDamage() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)){
                 $this->plugin->sit($player, $block);
-            } elseif ($block instanceof Stair and $block->getDamage() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
+            }elseif($block instanceof Stair and $block->getDamage() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)){
                 $this->plugin->sit($player, $block);
             }
         }
     }
 
-    public function onPlayerSneak(PlayerToggleSneakEvent $event): void
-    {
+    public function onPlayerSneak(PlayerToggleSneakEvent $event): void{
         $player = $event->getPlayer();
 
-        if ($this->plugin->isLaying($player)) {
+        if($this->plugin->isLaying($player)){
             $this->plugin->unsetLay($player);
         }
     }
 
-    public function onPlayerQuit(PlayerQuitEvent $event): void
-    {
+    public function onPlayerQuit(PlayerQuitEvent $event): void{
         $player = $event->getPlayer();
 
-        if ($this->plugin->isLaying($player)) {
+        if($this->plugin->isLaying($player)){
             $this->plugin->unsetLay($player);
-        } elseif ($this->plugin->isSitting($player)) {
+        }elseif($this->plugin->isSitting($player)){
             $this->plugin->unsetSit($player);
         }
     }
 
-    public function onTeleport(EntityTeleportEvent $event): void
-    {
+    public function onTeleport(EntityTeleportEvent $event): void{
         $entity = $event->getEntity();
 
-        if ($entity instanceof Player) {
-            if ($this->plugin->isLaying($entity)) {
+        if($entity instanceof Player){
+            if($this->plugin->isLaying($entity)){
                 $this->plugin->unsetLay($entity);
-            } elseif ($this->plugin->isSitting($entity)) {
+            }elseif($this->plugin->isSitting($entity)){
                 $this->plugin->unsetSit($entity);
             }
         }
     }
 
-    public function onLevelChange(EntityLevelChangeEvent $event): void
-    {
+    public function onLevelChange(EntityLevelChangeEvent $event): void{
         $entity = $event->getEntity();
 
-        if ($entity instanceof Player) {
-            if ($this->plugin->isLaying($entity)) {
+        if($entity instanceof Player){
+            if($this->plugin->isLaying($entity)){
                 $this->plugin->unsetLay($entity);
-            } elseif ($this->plugin->isSitting($entity)) {
+            }elseif($this->plugin->isSitting($entity)){
                 $this->plugin->unsetSit($entity);
             }
         }
     }
 
-    public function onDeath(PlayerDeathEvent $event): void
-    {
+    public function onDeath(PlayerDeathEvent $event): void{
         $player = $event->getPlayer();
 
-        if ($this->plugin->isLaying($player)) {
+        if($this->plugin->isLaying($player)){
             $this->plugin->unsetLay($player);
-        } elseif ($this->plugin->isSitting($player)) {
+        }elseif($this->plugin->isSitting($player)){
             $this->plugin->unsetSit($player);
         }
     }
 
-    public function onMove(PlayerMoveEvent $event): void
-    {
+    public function onMove(PlayerMoveEvent $event): void{
         $player = $event->getPlayer();
 
-        if ($this->plugin->isSitting($player)) {
+        if($this->plugin->isSitting($player)){
             $this->plugin->optimizeRotation($player);
         }
     }
 
-    public function onBlockBreak(BlockBreakEvent $event): void
-    {
+    public function onBlockBreak(BlockBreakEvent $event): void{
         $block = $event->getBlock();
 
-        foreach ($this->plugin->layData as $name => $data) {
-            if ($block->equals($data["pos"])) {
+        foreach($this->plugin->layData as $name => $data){
+            if($block->equals($data["pos"])){
                 $player = $this->plugin->getServer()->getPlayerExact($name);
 
-                if ($player !== null) {
+                if($player !== null){
                     $this->plugin->unsetLay($player);
                 }
             }
         }
 
-        if ($block instanceof Stair or $block instanceof Slab) {
+        if($block instanceof Stair or $block instanceof Slab){
             $pos = $block->add(0.5, 1.5, 0.5);
-        } elseif ($block instanceof Solid) {
+        }elseif($block instanceof Solid){
             $pos = $block->add(0.5, 2.1, 0.5);
-        } else {
+        }else{
             return;
         }
 
-        foreach ($this->plugin->sittingData as $playerName => $data) {
-            if ($pos->equals($data["pos"])) {
+        foreach($this->plugin->sittingData as $playerName => $data){
+            if($pos->equals($data["pos"])){
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
-                if ($sittingPlayer !== null) {
+                if($sittingPlayer !== null){
                     $this->plugin->unsetSit($sittingPlayer);
                 }
             }
         }
     }
 
-    public function onDamageEvent(EntityDamageEvent $event): void
-    {
+    public function onDamageEvent(EntityDamageEvent $event): void{
         $entity = $event->getEntity();
 
-        if (($entity instanceof Player) && $this->plugin->isLaying($entity) && $event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION) {
+        if(($entity instanceof Player) && $this->plugin->isLaying($entity) && $event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION){
             $event->setCancelled();
         }
     }
 
-    public function onDataPacketReceive(DataPacketReceiveEvent $event): void
-    {
+    public function onDataPacketReceive(DataPacketReceiveEvent $event): void{
         $packet = $event->getPacket();
         $player = $event->getPlayer();
 
-        if (($packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE) && $this->plugin->isSitting($player)) {
+        if(($packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE) && $this->plugin->isSitting($player)){
             $this->plugin->unsetSit($player);
         }
     }
@@ -221,8 +208,7 @@ class EventListener implements Listener
     /**
      * @return Config
      */
-    private function getConfig(): Config
-    {
+    private function getConfig(): Config{
         return $this->plugin->getConfig();
     }
 }

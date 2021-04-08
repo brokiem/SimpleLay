@@ -47,8 +47,7 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
-class SimpleLay extends PluginBase
-{
+class SimpleLay extends PluginBase {
 
     /** @var array $layData */
     public $layData = [];
@@ -59,8 +58,7 @@ class SimpleLay extends PluginBase
     /** @var array $sittingData */
     public $sittingData = [];
 
-    public function onEnable(): void
-    {
+    public function onEnable(): void{
         CommandManager::init($this);
         UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
@@ -70,9 +68,8 @@ class SimpleLay extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
 
-    private function checkConfig(): void
-    {
-        if ($this->getConfig()->get("config-version") !== 2.0) {
+    private function checkConfig(): void{
+        if($this->getConfig()->get("config-version") !== 2.0){
             $this->getLogger()->notice("Your configuration file is outdated, updating the config.yml...");
             $this->getLogger()->notice("The old configuration file can be found at config.old.yml");
 
@@ -86,29 +83,27 @@ class SimpleLay extends PluginBase
      * @param Player $player
      * @return bool
      */
-    public function isLaying(Player $player): bool
-    {
+    public function isLaying(Player $player): bool{
         return isset($this->layData[$player->getLowerCaseName()]);
     }
 
     /**
      * @param Player $player
      */
-    public function setLay(Player $player): void
-    {
+    public function setLay(Player $player): void{
         $level = $player->getLevel();
-        if ($level !== null) {
+        if($level !== null){
             $block = $level->getBlock($player->add(0, -0.5));
-            if ($block instanceof Air or $block instanceof Liquid) {
+            if($block instanceof Air or $block instanceof Liquid){
                 $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
                 return;
             }
-        } else {
+        }else{
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
             return;
         }
 
-        if ($this->isSitting($player)) {
+        if($this->isSitting($player)){
             $this->unsetSit($player);
             return;
         }
@@ -120,7 +115,7 @@ class SimpleLay extends PluginBase
 
         $layingEntity = Entity::createEntity("LayingEntity", $player->getLevelNonNull(), $nbt, $player);
 
-        if (!$layingEntity instanceof LayingEntity) {
+        if(!$layingEntity instanceof LayingEntity){
             return;
         }
 
@@ -134,10 +129,7 @@ class SimpleLay extends PluginBase
 
         $player->teleport($player->add(0, -1));
 
-        $this->layData[$player->getLowerCaseName()] = [
-            "entity" => $layingEntity,
-            "pos" => $player->floor()
-        ];
+        $this->layData[$player->getLowerCaseName()] = ["entity" => $layingEntity, "pos" => $player->floor()];
 
         $player->setInvisible();
         $player->setImmobile();
@@ -150,8 +142,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function unsetLay(Player $player): void
-    {
+    public function unsetLay(Player $player): void{
         $entity = $this->layData[$player->getLowerCaseName()]["entity"];
 
         $player->setInvisible(false);
@@ -161,7 +152,7 @@ class SimpleLay extends PluginBase
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-lay-message", "&6You are no longer laying!")));
         unset($this->layData[$player->getLowerCaseName()]);
 
-        if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+        if(($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()){
             $entity->flagForDespawn();
         }
 
@@ -172,8 +163,7 @@ class SimpleLay extends PluginBase
      * @param Player $player
      * @return bool
      */
-    public function isSitting(Player $player): bool
-    {
+    public function isSitting(Player $player): bool{
         return isset($this->sittingData[$player->getLowerCaseName()]);
     }
 
@@ -181,29 +171,28 @@ class SimpleLay extends PluginBase
      * @param Player $player
      * @param Block $block
      */
-    public function sit(Player $player, Block $block): void
-    {
-        if ($block instanceof Stair or $block instanceof Slab) {
+    public function sit(Player $player, Block $block): void{
+        if($block instanceof Stair or $block instanceof Slab){
             $pos = $block->add(0.5, 1.5, 0.5);
-        } elseif ($block instanceof Solid) {
+        }elseif($block instanceof Solid){
             $pos = $block->add(0.5, 2.1, 0.5);
-        } else {
+        }else{
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-sit", "&cYou can only sit on the Solid, Stair, or Slab block!")));
             return;
         }
 
-        if ($this->isLaying($player)) {
+        if($this->isLaying($player)){
             $this->unsetLay($player);
         }
 
-        foreach ($this->sittingData as $playerName => $data) {
-            if ($pos->equals($data['pos'])) {
+        foreach($this->sittingData as $playerName => $data){
+            if($pos->equals($data['pos'])){
                 $player->sendMessage(TextFormat::colorize($this->getConfig()->get("seat-already-in-use", "&cThis seat is occupied!")));
                 return;
             }
         }
 
-        if ($this->isSitting($player)) {
+        if($this->isSitting($player)){
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("already-in-seat", "&6You are already sitting!")));
             return;
         }
@@ -220,9 +209,8 @@ class SimpleLay extends PluginBase
      * @param Position $pos
      * @param int|null $eid
      */
-    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null): void
-    {
-        if ($eid === null) {
+    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null): void{
+        if($eid === null){
             $eid = Entity::$entityCount++;
         }
 
@@ -240,21 +228,17 @@ class SimpleLay extends PluginBase
         $this->getServer()->broadcastPacket($viewers, $pk);
         $this->getServer()->broadcastPacket($viewers, $link);
 
-        if ($this->isSitting($player)) {
+        if($this->isSitting($player)){
             return;
         }
 
-        $this->sittingData[$player->getLowerCaseName()] = [
-            'eid' => $eid,
-            'pos' => $pos
-        ];
+        $this->sittingData[$player->getLowerCaseName()] = ['eid' => $eid, 'pos' => $pos];
     }
 
     /**
      * @param Player $player
      */
-    public function unsetSit(Player $player): void
-    {
+    public function unsetSit(Player $player): void{
         $pk1 = new RemoveActorPacket();
         $pk1->entityUniqueId = $this->sittingData[$player->getLowerCaseName()]['eid'];
 
@@ -274,16 +258,14 @@ class SimpleLay extends PluginBase
      * @param Player $player
      * @return bool
      */
-    public function isToggleSit(Player $player): bool
-    {
+    public function isToggleSit(Player $player): bool{
         return in_array($player->getLowerCaseName(), $this->toggleSit, true);
     }
 
     /**
      * @param Player $player
      */
-    public function setToggleSit(Player $player): void
-    {
+    public function setToggleSit(Player $player): void{
         $this->toggleSit[] = $player->getLowerCaseName();
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("toggle-sit-message", "&6You have disabled tap-on-block sit!")));
@@ -292,8 +274,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function unsetToggleSit(Player $player): void
-    {
+    public function unsetToggleSit(Player $player): void{
         unset($this->toggleSit[array_search($player->getLowerCaseName(), $this->toggleSit, true)]);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message", "&6You have enabled tap-on-block sit")));
@@ -302,8 +283,7 @@ class SimpleLay extends PluginBase
     /**
      * @param Player $player
      */
-    public function optimizeRotation(Player $player): void
-    {
+    public function optimizeRotation(Player $player): void{
         $pk = new MoveActorAbsolutePacket();
         $pk->position = $this->sittingData[$player->getLowerCaseName()]['pos'];
         $pk->entityRuntimeId = $this->sittingData[$player->getLowerCaseName()]['eid'];
@@ -314,11 +294,10 @@ class SimpleLay extends PluginBase
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
 
-    public function onDisable(): void
-    {
-        foreach ($this->getServer()->getLevels() as $level) {
-            foreach ($level->getEntities() as $entity) {
-                if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+    public function onDisable(): void{
+        foreach($this->getServer()->getLevels() as $level){
+            foreach($level->getEntities() as $entity){
+                if(($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()){
                     $entity->flagForDespawn();
                 }
             }

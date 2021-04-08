@@ -8,30 +8,27 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\Player;
 
-class SitToggleCommand extends PluginCommand
-{
+class SitToggleCommand extends PluginCommand {
 
-    public function __construct(string $name, SimpleLay $owner)
-    {
+    public function __construct(string $name, SimpleLay $owner){
         parent::__construct($name, $owner);
         $this->setPermission("simplelay.sittoggle");
         $this->setDescription("toggle sit when tapping block");
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool
-    {
-        if (!$this->testPermission($sender)) {
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool{
+        if(!$this->testPermission($sender)){
             return true;
         }
 
-        if (!$sender instanceof Player) {
+        if(!$sender instanceof Player){
             $sender->sendMessage("[SimpleLay] Use this command in game!");
             return true;
         }
 
-        if ($this->getPlugin()->isToggleSit($sender)) {
+        if($this->getPlugin()->isToggleSit($sender)){
             $this->getPlugin()->unsetToggleSit($sender);
-        } else {
+        }else{
             $this->getPlugin()->setToggleSit($sender);
         }
 
