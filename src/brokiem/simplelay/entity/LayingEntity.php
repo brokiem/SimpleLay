@@ -37,12 +37,6 @@ class LayingEntity extends Human {
     /** @var Player $player */
     private $player;
 
-    /**
-     * LayingEntity constructor.
-     * @param Level $level
-     * @param CompoundTag $nbt
-     * @param Player $player
-     */
     public function __construct(Level $level, CompoundTag $nbt, Player $player){
         parent::__construct($level, $nbt);
         $this->player = $player;

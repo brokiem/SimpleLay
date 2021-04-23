@@ -53,10 +53,6 @@ class EventListener implements Listener {
     /** @var SimpleLay $plugin */
     private $plugin;
 
-    /**
-     * EventListener constructor.
-     * @param SimpleLay $plugin
-     */
     public function __construct(SimpleLay $plugin){
         $this->plugin = $plugin;
     }
@@ -205,9 +201,6 @@ class EventListener implements Listener {
         }
     }
 
-    /**
-     * @return Config
-     */
     private function getConfig(): Config{
         return $this->plugin->getConfig();
     }
