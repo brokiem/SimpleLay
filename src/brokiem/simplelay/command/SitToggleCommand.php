@@ -3,25 +3,27 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\command;
 
-use brokiem\simplelay\SimpleLay;
+use brokiem\simplelay\traits\CommandTrait;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginCommand;
+use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\Player;
 
-class SitToggleCommand extends PluginCommand {
+class SitToggleCommand extends Command implements PluginIdentifiableCommand {
+    use CommandTrait;
 
-    public function __construct(string $name, SimpleLay $owner){
-        parent::__construct($name, $owner);
+    public function __construct(string $name) {
+        parent::__construct($name);
         $this->setPermission("simplelay.sittoggle");
         $this->setDescription("toggle sit when tapping block");
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool{
-        if(!$this->testPermission($sender)){
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
+        if (!$this->testPermission($sender)) {
             return true;
         }
 
-        if(!$sender instanceof Player){
+        if (!$sender instanceof Player) {
             $sender->sendMessage("[SimpleLay] Use this command in game!");
             return true;
         }
@@ -32,6 +34,6 @@ class SitToggleCommand extends PluginCommand {
             $this->getPlugin()->setToggleSit($sender);
         }
 
-        return parent::execute($sender, $commandLabel, $args);
+        return true;
     }
 }

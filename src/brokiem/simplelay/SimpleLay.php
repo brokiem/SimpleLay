@@ -29,7 +29,7 @@ namespace brokiem\simplelay;
 
 use brokiem\simplelay\command\CommandManager;
 use brokiem\simplelay\entity\LayingEntity;
-use JackMD\UpdateNotifier\UpdateNotifier;
+use brokiem\uc\UpdateChecker;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\block\Liquid;
@@ -45,9 +45,11 @@ use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
 use pocketmine\network\mcpe\protocol\types\EntityLink;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
 
 class SimpleLay extends PluginBase {
+    use SingletonTrait;
 
     /** @var array $layData */
     public $layData = [];
@@ -58,9 +60,11 @@ class SimpleLay extends PluginBase {
     /** @var array $sittingData */
     public $sittingData = [];
 
-    public function onEnable(): void{
-        CommandManager::init($this);
-        UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
+    public function onEnable(): void {
+        UpdateChecker::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
+
+        self::setInstance($this);
+        CommandManager::init($this->getServer());
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
 
         $this->saveDefaultConfig();
@@ -163,8 +167,8 @@ class SimpleLay extends PluginBase {
             $this->unsetLay($player);
         }
 
-        foreach($this->sittingData as $playerName => $data){
-            if($pos->equals($data['pos'])){
+        foreach ($this->sittingData as $data) {
+            if ($pos->equals($data['pos'])) {
                 $player->sendMessage(TextFormat::colorize($this->getConfig()->get("seat-already-in-use", "&cThis seat is occupied!")));
                 return;
             }

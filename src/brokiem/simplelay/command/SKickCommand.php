@@ -3,22 +3,24 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\command;
 
-use brokiem\simplelay\SimpleLay;
+use brokiem\simplelay\traits\CommandTrait;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginCommand;
+use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\utils\TextFormat;
 
-class SKickCommand extends PluginCommand {
+class SKickCommand extends Command implements PluginIdentifiableCommand {
+    use CommandTrait;
 
-    public function __construct(string $name, SimpleLay $owner){
-        parent::__construct($name, $owner);
+    public function __construct(string $name) {
+        parent::__construct($name);
         $this->setPermission("simplelay.skick");
         $this->setDescription("kick the player from a sitting or laying location");
         $this->setUsage("/skick <player>");
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool{
-        if(!$this->testPermission($sender)){
+    public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
+        if (!$this->testPermission($sender)) {
             return true;
         }
 
@@ -46,6 +48,6 @@ class SKickCommand extends PluginCommand {
             return false;
         }
 
-        return parent::execute($sender, $commandLabel, $args);
+        return true;
     }
 }

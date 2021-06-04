@@ -8,6 +8,6 @@ projects:
     path: ""
     icon: "/assets/logo.PNG"
     libs:
-      - src: JackMD/UpdateNotifier/UpdateNotifier
-        version: ^2.1
+      - src: brokiem-pm-pl/UpdateChecker/UpdateChecker
+        version: ^1.0.0
 ...

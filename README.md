@@ -4,9 +4,9 @@
 [![Star](https://img.shields.io/github/stars/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay/stargazers)
 [![Discord](https://img.shields.io/discord/830063409000087612?color=7389D8&label=discord)](https://discord.com/invite/jy6abSrjhQ)
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dbrokiem%26type%3Dpatrons&style=flat)](https://patreon.com/brokiem)
-[![](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay) <br>
+[![SimpleLay](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay) <br>
 
-### SimpleLay 2.0.0
+### SimpleLay
 Added many features such as sitting, custom messages and permissions!
 
 ### Description
