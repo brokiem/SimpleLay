@@ -7,6 +7,7 @@ use pocketmine\plugin\Plugin;
 
 trait CommandTrait {
 
+    /** @return SimpleLay */
     public function getPlugin(): Plugin {
         return SimpleLay::getInstance();
     }
