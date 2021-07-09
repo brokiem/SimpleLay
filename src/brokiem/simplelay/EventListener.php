@@ -39,6 +39,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerJumpEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
@@ -95,6 +96,14 @@ class EventListener implements Listener {
     }
 
     public function onPlayerSneak(PlayerToggleSneakEvent $event): void {
+        $player = $event->getPlayer();
+
+        if ($this->plugin->isLaying($player)) {
+            $this->plugin->unsetLay($player);
+        }
+    }
+
+    public function onPlayerJump(PlayerJumpEvent $event): void {
         $player = $event->getPlayer();
 
         if ($this->plugin->isLaying($player)) {
