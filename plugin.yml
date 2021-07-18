@@ -1,6 +1,6 @@
 name: SimpleLay
 main: brokiem\simplelay\SimpleLay
-version: 2.1.6
+version: 2.1.7
 api: [ 3.16.0 ]
 author: brokiem
 
