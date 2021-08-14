@@ -30,7 +30,6 @@ namespace brokiem\simplelay;
 use brokiem\simplelay\command\CommandManager;
 use brokiem\simplelay\entity\LayingEntity;
 use brokiem\simplelay\task\async\CheckUpdateTask;
-use brokiem\uc\UpdateChecker;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\block\Liquid;
@@ -66,8 +65,6 @@ class SimpleLay extends PluginBase {
     public $cachedUpdate = [];
 
     public function onEnable(): void {
-        UpdateChecker::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
-
         self::setInstance($this);
         CommandManager::init($this->getServer());
         Entity::registerEntity(LayingEntity::class, true, ["LayingEntity"]);
