@@ -61,7 +61,17 @@ class EventListener implements Listener {
     }
 
     public function onPlayerJoin(PlayerJoinEvent $event): void {
-        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use ($event): void {
+        $player = $event->getPlayer();
+
+        if ($player->hasPermission("simplelay.notify") and !empty(SimpleLay::getInstance()->cachedUpdate)) {
+            [$latestVersion, $updateDate, $updateUrl] = SimpleLay::getInstance()->cachedUpdate;
+
+            if (SimpleLay::getInstance()->getDescription()->getVersion() !== $latestVersion) {
+                $player->sendMessage(" \n§aSimpleLay §bv$latestVersion §ahas been released on §b$updateDate. §aDownload the new update at §b$updateUrl\n ");
+            }
+        }
+
+        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use ($player): void {
             foreach ($this->plugin->sittingData as $playerName => $data) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
@@ -76,7 +86,7 @@ class EventListener implements Listener {
                         return;
                     }
 
-                    $this->plugin->setSit($sittingPlayer, [$event->getPlayer()], new Position($pos->x, $pos->y, $pos->z, $sittingPlayer->getLevel()), $data['eid']);
+                    $this->plugin->setSit($sittingPlayer, [$player], new Position($pos->x, $pos->y, $pos->z, $sittingPlayer->getLevel()), $data['eid']);
                 }
             }
         }), 40);

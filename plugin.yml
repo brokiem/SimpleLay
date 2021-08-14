@@ -22,3 +22,5 @@ permissions:
     description: "permission to allow the use of skick command"
   simplelay.rldcfg:
     default: op
+  simplelay.notify:
+    default: op
