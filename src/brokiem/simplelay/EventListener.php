@@ -105,6 +105,10 @@ class EventListener implements Listener {
         }
     }
 
+    private function getConfig(): Config {
+        return $this->plugin->getConfig();
+    }
+
     public function onPlayerSneak(PlayerToggleSneakEvent $event): void {
         $player = $event->getPlayer();
 
@@ -231,9 +235,5 @@ class EventListener implements Listener {
                 $this->plugin->getServer()->broadcastPacket($entity->getViewers(), $pk);
             }
         }
-    }
-
-    private function getConfig(): Config {
-        return $this->plugin->getConfig();
     }
 }

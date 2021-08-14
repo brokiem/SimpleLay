@@ -79,8 +79,8 @@ class SimpleLay extends PluginBase {
         $this->getServer()->getAsyncPool()->submitTask(new CheckUpdateTask($this));
     }
 
-    private function checkConfig(): void{
-        if($this->getConfig()->get("config-version") !== 2.0){
+    private function checkConfig(): void {
+        if ($this->getConfig()->get("config-version") !== 2.0) {
             $this->getLogger()->notice("Your configuration file is outdated, updating the config.yml...");
             $this->getLogger()->notice("The old configuration file can be found at config.old.yml");
 
@@ -90,24 +90,20 @@ class SimpleLay extends PluginBase {
         }
     }
 
-    public function isLaying(Player $player): bool{
-        return isset($this->layData[strtolower($player->getName())]);
-    }
-
-    public function setLay(Player $player): void{
+    public function setLay(Player $player): void {
         $level = $player->getLevel();
-        if($level !== null){
+        if ($level !== null) {
             $block = $level->getBlock($player->add(0, -0.5));
-            if($block instanceof Air or $block instanceof Liquid){
+            if ($block instanceof Air or $block instanceof Liquid) {
                 $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
                 return;
             }
-        }else{
+        } else {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
             return;
         }
 
-        if($this->isSitting($player)){
+        if ($this->isSitting($player)) {
             $this->unsetSit($player);
             return;
         }
@@ -139,38 +135,37 @@ class SimpleLay extends PluginBase {
         $player->sendActionBarMessage(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
-    public function unsetLay(Player $player): void{
-        $entity = $this->getServer()->findEntity($this->layData[strtolower($player->getName())]["entity"]);
-
-        $player->setInvisible(false);
-        $player->setImmobile(false);
-        $player->setScale(1);
-
-        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-lay-message", "&6You are no longer laying!")));
-        unset($this->layData[strtolower($player->getName())]);
-
-        if(($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()){
-            $entity->flagForDespawn();
-        }
-
-        $player->teleport($player->add(0, 1.2));
-    }
-
-    public function isSitting(Player $player): bool{
+    public function isSitting(Player $player): bool {
         return isset($this->sittingData[strtolower($player->getName())]);
     }
 
-    public function sit(Player $player, Block $block): void{
-        if($block instanceof Stair or $block instanceof Slab){
+    public function unsetSit(Player $player): void {
+        $pk1 = new RemoveActorPacket();
+        $pk1->entityUniqueId = $this->sittingData[strtolower($player->getName())]['eid'];
+
+        $pk = new SetActorLinkPacket();
+        $pk->link = new EntityLink($this->sittingData[strtolower($player->getName())]['eid'], $player->getId(), EntityLink::TYPE_REMOVE, true, true);
+
+        unset($this->sittingData[strtolower($player->getName())]);
+
+        $player->setGenericFlag(Entity::DATA_FLAG_RIDING, false);
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-sit-message", "&6You are no longer sitting!")));
+
+        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk1);
+        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
+    }
+
+    public function sit(Player $player, Block $block): void {
+        if ($block instanceof Stair or $block instanceof Slab) {
             $pos = $block->add(0.5, 1.5, 0.5);
-        }elseif($block instanceof Solid){
+        } elseif ($block instanceof Solid) {
             $pos = $block->add(0.5, 2.1, 0.5);
-        }else{
+        } else {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-sit", "&cYou can only sit on the Solid, Stair, or Slab block!")));
             return;
         }
 
-        if($this->isLaying($player)){
+        if ($this->isLaying($player)) {
             $this->unsetLay($player);
         }
 
@@ -181,7 +176,7 @@ class SimpleLay extends PluginBase {
             }
         }
 
-        if($this->isSitting($player)){
+        if ($this->isSitting($player)) {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("already-in-seat", "&6You are already sitting!")));
             return;
         }
@@ -192,8 +187,29 @@ class SimpleLay extends PluginBase {
         $player->sendTip(TextFormat::colorize($this->getConfig()->get("tap-sneak-button-message", "Tap the sneak button to stand up")));
     }
 
-    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null): void{
-        if($eid === null){
+    public function isLaying(Player $player): bool {
+        return isset($this->layData[strtolower($player->getName())]);
+    }
+
+    public function unsetLay(Player $player): void {
+        $entity = $this->getServer()->findEntity($this->layData[strtolower($player->getName())]["entity"]);
+
+        $player->setInvisible(false);
+        $player->setImmobile(false);
+        $player->setScale(1);
+
+        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-lay-message", "&6You are no longer laying!")));
+        unset($this->layData[strtolower($player->getName())]);
+
+        if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+            $entity->flagForDespawn();
+        }
+
+        $player->teleport($player->add(0, 1.2));
+    }
+
+    public function setSit(Player $player, array $viewers, Position $pos, ?int $eid = null): void {
+        if ($eid === null) {
             $eid = Entity::$entityCount++;
         }
 
@@ -211,46 +227,30 @@ class SimpleLay extends PluginBase {
         $this->getServer()->broadcastPacket($viewers, $pk);
         $this->getServer()->broadcastPacket($viewers, $link);
 
-        if($this->isSitting($player)){
+        if ($this->isSitting($player)) {
             return;
         }
 
         $this->sittingData[strtolower($player->getName())] = ['eid' => $eid, 'pos' => $pos];
     }
 
-    public function unsetSit(Player $player): void{
-        $pk1 = new RemoveActorPacket();
-        $pk1->entityUniqueId = $this->sittingData[strtolower($player->getName())]['eid'];
-
-        $pk = new SetActorLinkPacket();
-        $pk->link = new EntityLink($this->sittingData[strtolower($player->getName())]['eid'], $player->getId(), EntityLink::TYPE_REMOVE, true, true);
-
-        unset($this->sittingData[strtolower($player->getName())]);
-
-        $player->setGenericFlag(Entity::DATA_FLAG_RIDING, false);
-        $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-sit-message", "&6You are no longer sitting!")));
-
-        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk1);
-        $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
-    }
-
-    public function isToggleSit(Player $player): bool{
+    public function isToggleSit(Player $player): bool {
         return in_array(strtolower($player->getName()), $this->toggleSit, true);
     }
 
-    public function setToggleSit(Player $player): void{
+    public function setToggleSit(Player $player): void {
         $this->toggleSit[] = strtolower($player->getName());
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("toggle-sit-message", "&6You have disabled tap-on-block sit!")));
     }
 
-    public function unsetToggleSit(Player $player): void{
+    public function unsetToggleSit(Player $player): void {
         unset($this->toggleSit[array_search(strtolower($player->getName()), $this->toggleSit, true)]);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("untoggle-sit-message", "&6You have enabled tap-on-block sit")));
     }
 
-    public function optimizeRotation(Player $player): void{
+    public function optimizeRotation(Player $player): void {
         $pk = new MoveActorAbsolutePacket();
         $pk->position = $this->sittingData[strtolower($player->getName())]['pos'];
         $pk->entityRuntimeId = $this->sittingData[strtolower($player->getName())]['eid'];
@@ -261,10 +261,10 @@ class SimpleLay extends PluginBase {
         $this->getServer()->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
     }
 
-    public function onDisable(): void{
-        foreach($this->getServer()->getLevels() as $level){
-            foreach($level->getEntities() as $entity){
-                if(($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()){
+    public function onDisable(): void {
+        foreach ($this->getServer()->getLevels() as $level) {
+            foreach ($level->getEntities() as $entity) {
+                if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
                     $entity->flagForDespawn();
                 }
             }

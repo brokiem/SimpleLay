@@ -24,21 +24,21 @@ class SKickCommand extends Command implements PluginIdentifiableCommand {
             return true;
         }
 
-        if(isset($args[0])){
+        if (isset($args[0])) {
             $player = $this->getPlugin()->getServer()->getPlayerExact($args[0]);
 
-            if($player !== null){
-                if($this->getPlugin()->isLaying($player)){
+            if ($player !== null) {
+                if ($this->getPlugin()->isLaying($player)) {
                     $this->getPlugin()->unsetLay($player);
                     $sender->sendMessage(TextFormat::GREEN . "Successfully kicked '{$player->getName()}' from laying!");
 
                     $player->sendMessage(TextFormat::colorize($this->getPlugin()->getConfig()->get("kicked-from-lay", "&cYou've been kicked from laying!")));
-                }elseif($this->getPlugin()->isSitting($player)){
+                } elseif ($this->getPlugin()->isSitting($player)) {
                     $this->getPlugin()->unsetSit($player);
                     $sender->sendMessage(TextFormat::GREEN . "Successfully kicked '{$player->getName()}' from the seat!");
 
                     $player->sendMessage(TextFormat::colorize($this->getPlugin()->getConfig()->get("kicked-from-seat", "&cYou've been kicked from the seat!")));
-                }else{
+                } else {
                     $sender->sendMessage(TextFormat::RED . "Player: '{$player->getName()}' is not sitting or laying!");
                 }
             } else {

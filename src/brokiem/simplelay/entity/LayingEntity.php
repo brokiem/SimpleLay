@@ -37,13 +37,13 @@ class LayingEntity extends Human {
     /** @var Player $player */
     private $player;
 
-    public function __construct(Level $level, CompoundTag $nbt, Player $player){
+    public function __construct(Level $level, CompoundTag $nbt, Player $player) {
         parent::__construct($level, $nbt);
         $this->player = $player;
     }
 
-    public function onUpdate(int $currentTick): bool{
-        if($this->isFlaggedForDespawn()){
+    public function onUpdate(int $currentTick): bool {
+        if ($this->isFlaggedForDespawn()) {
             return false;
         }
 
@@ -52,7 +52,7 @@ class LayingEntity extends Human {
         return true;
     }
 
-    public function attack(EntityDamageEvent $source): void{
+    public function attack(EntityDamageEvent $source): void {
 
     }
 }
