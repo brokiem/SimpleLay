@@ -7,7 +7,4 @@ projects:
   SimpleLay:
     path: ""
     icon: "/assets/logo.PNG"
-    libs:
-      - src: brokiem-pm-pl/UpdateChecker/UpdateChecker
-        version: ^1.0.0
 ...

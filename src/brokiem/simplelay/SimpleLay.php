@@ -29,6 +29,7 @@ namespace brokiem\simplelay;
 
 use brokiem\simplelay\command\CommandManager;
 use brokiem\simplelay\entity\LayingEntity;
+use brokiem\simplelay\task\async\CheckUpdateTask;
 use brokiem\uc\UpdateChecker;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
@@ -61,6 +62,9 @@ class SimpleLay extends PluginBase {
     /** @var array $sittingData */
     public $sittingData = [];
 
+    /** @var array */
+    public $cachedUpdate = [];
+
     public function onEnable(): void {
         UpdateChecker::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
 
@@ -71,6 +75,8 @@ class SimpleLay extends PluginBase {
         $this->saveDefaultConfig();
         $this->checkConfig();
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
+
+        $this->getServer()->getAsyncPool()->submitTask(new CheckUpdateTask($this));
     }
 
     private function checkConfig(): void{
