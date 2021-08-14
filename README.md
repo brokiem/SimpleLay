@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay)
 [![Star](https://img.shields.io/github/stars/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay/stargazers)
 [![Discord](https://img.shields.io/discord/830063409000087612?color=7389D8&label=discord)](https://discord.com/invite/jy6abSrjhQ)
-[![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dbrokiem%26type%3Dpatrons&style=flat)](https://patreon.com/brokiem)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/brokiem)
 [![SimpleLay](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay) <br>
 
 ### SimpleLay
