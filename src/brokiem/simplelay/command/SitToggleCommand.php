@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\command;
 
-use brokiem\simplelay\traits\CommandTrait;
+use brokiem\simplelay\SimpleLay;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\Player;
+use pocketmine\plugin\Plugin;
 
 class SitToggleCommand extends Command implements PluginIdentifiableCommand {
-    use CommandTrait;
 
     public function __construct(string $name) {
         parent::__construct($name);
@@ -28,12 +28,16 @@ class SitToggleCommand extends Command implements PluginIdentifiableCommand {
             return true;
         }
 
-        if($this->getPlugin()->isToggleSit($sender)){
+        if ($this->getPlugin()->isToggleSit($sender)) {
             $this->getPlugin()->unsetToggleSit($sender);
-        }else{
+        } else {
             $this->getPlugin()->setToggleSit($sender);
         }
 
         return true;
+    }
+
+    public function getPlugin(): Plugin {
+        return SimpleLay::getInstance();
     }
 }

@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\command;
 
-use brokiem\simplelay\traits\CommandTrait;
+use brokiem\simplelay\SimpleLay;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
+use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat;
 
 class SKickCommand extends Command implements PluginIdentifiableCommand {
-    use CommandTrait;
 
     public function __construct(string $name) {
         parent::__construct($name);
@@ -41,13 +41,17 @@ class SKickCommand extends Command implements PluginIdentifiableCommand {
                 }else{
                     $sender->sendMessage(TextFormat::RED . "Player: '{$player->getName()}' is not sitting or laying!");
                 }
-            }else{
+            } else {
                 $sender->sendMessage(TextFormat::RED . "Player: '$args[0]' not found!");
             }
-        }else{
+        } else {
             return false;
         }
 
         return true;
+    }
+
+    public function getPlugin(): Plugin {
+        return SimpleLay::getInstance();
     }
 }
