@@ -37,6 +37,7 @@ use pocketmine\block\Slab;
 use pocketmine\block\Solid;
 use pocketmine\block\Stair;
 use pocketmine\entity\Entity;
+use pocketmine\entity\EntityIds;
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
@@ -112,9 +113,9 @@ class SimpleLay extends PluginBase {
 
         $layingEntity = new LayingEntity($player->getLevelNonNull(), $nbt, $player);
 
-        $layingEntity->getDataPropertyManager()->setFloat(LayingEntity::DATA_BOUNDING_BOX_HEIGHT, 0.2);
-        $layingEntity->getDataPropertyManager()->setBlockPos(LayingEntity::DATA_PLAYER_BED_POSITION, $player->add(0, -0.3));
-        $layingEntity->setGenericFlag(LayingEntity::DATA_FLAG_SLEEPING, true);
+        $layingEntity->getDataPropertyManager()->setFloat(Entity::DATA_BOUNDING_BOX_HEIGHT, 0.2);
+        $layingEntity->getDataPropertyManager()->setBlockPos(Entity::DATA_PLAYER_BED_POSITION, $player->add(0, -0.3));
+        $layingEntity->setGenericFlag(Entity::DATA_FLAG_SLEEPING, true);
 
         $layingEntity->setCanSaveWithChunk(false);
         $layingEntity->setNameTag($player->getDisplayName());
@@ -192,7 +193,7 @@ class SimpleLay extends PluginBase {
 
         $pk = new AddActorPacket();
         $pk->entityRuntimeId = $eid;
-        $pk->type = AddActorPacket::LEGACY_ID_MAP_BC[Entity::WOLF];
+        $pk->type = AddActorPacket::LEGACY_ID_MAP_BC[EntityIds::WOLF];
 
         $pk->position = $pos->asVector3();
         $pk->metadata = [Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, (1 << Entity::DATA_FLAG_IMMOBILE | 1 << Entity::DATA_FLAG_SILENT | 1 << Entity::DATA_FLAG_INVISIBLE)]];
