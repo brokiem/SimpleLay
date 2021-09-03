@@ -27,8 +27,8 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
-use pocketmine\block\Slab;
 use pocketmine\block\Opaque;
+use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
@@ -46,8 +46,7 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
 use pocketmine\world\Position;
 
-class EventListener implements Listener
-{
+class EventListener implements Listener {
 
     /** @var SimpleLay $plugin */
     private SimpleLay $plugin;
@@ -56,14 +55,12 @@ class EventListener implements Listener
      * EventListener constructor.
      * @param SimpleLay $plugin
      */
-    public function __construct(SimpleLay $plugin)
-    {
+    public function __construct(SimpleLay $plugin) {
         $this->plugin = $plugin;
     }
 
-    public function onPlayerJoin(PlayerJoinEvent $event): void
-    {
-        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($event): void {
+    public function onPlayerJoin(PlayerJoinEvent $event): void {
+        $this->plugin->getScheduler()->scheduleDelayedTask(new ClosureTask(function() use ($event): void {
             foreach ($this->plugin->sittingData as $playerName => $data) {
                 $sittingPlayer = $this->plugin->getServer()->getPlayerExact($playerName);
 
@@ -84,8 +81,7 @@ class EventListener implements Listener
         }), 30);
     }
 
-    public function onInteract(PlayerInteractEvent $event): void
-    {
+    public function onInteract(PlayerInteractEvent $event): void {
         $player = $event->getPlayer();
         $block = $event->getBlock();
 
@@ -100,8 +96,14 @@ class EventListener implements Listener
         }
     }
 
-    public function onPlayerSneak(PlayerToggleSneakEvent $event): void
-    {
+    /**
+     * @return Config
+     */
+    private function getConfig(): Config {
+        return $this->plugin->getConfig();
+    }
+
+    public function onPlayerSneak(PlayerToggleSneakEvent $event): void {
         $player = $event->getPlayer();
 
         if ($this->plugin->isLaying($player)) {
@@ -109,27 +111,13 @@ class EventListener implements Listener
         }
     }
 
-    public function onPlayerQuit(PlayerQuitEvent $event): void
-    {
+    public function onPlayerQuit(PlayerQuitEvent $event): void {
         $player = $event->getPlayer();
 
         if ($this->plugin->isLaying($player)) {
             $this->plugin->unsetLay($player);
         } elseif ($this->plugin->isSitting($player)) {
             $this->plugin->unsetSit($player);
-        }
-    }
-
-    public function onTeleport(EntityTeleportEvent $event): void
-    {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof Player) {
-            if ($this->plugin->isLaying($entity)) {
-                $this->plugin->unsetLay($entity);
-            } elseif ($this->plugin->isSitting($entity)) {
-                $this->plugin->unsetSit($entity);
-            }
         }
     }
 
@@ -149,8 +137,19 @@ class EventListener implements Listener
     What is this?
     */
 
-    public function onDeath(PlayerDeathEvent $event): void
-    {
+    public function onTeleport(EntityTeleportEvent $event): void {
+        $entity = $event->getEntity();
+
+        if ($entity instanceof Player) {
+            if ($this->plugin->isLaying($entity)) {
+                $this->plugin->unsetLay($entity);
+            } elseif ($this->plugin->isSitting($entity)) {
+                $this->plugin->unsetSit($entity);
+            }
+        }
+    }
+
+    public function onDeath(PlayerDeathEvent $event): void {
         $player = $event->getPlayer();
 
         if ($this->plugin->isLaying($player)) {
@@ -160,8 +159,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onMove(PlayerMoveEvent $event): void
-    {
+    public function onMove(PlayerMoveEvent $event): void {
         $player = $event->getPlayer();
 
         if ($this->plugin->isSitting($player)) {
@@ -169,8 +167,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onBlockBreak(BlockBreakEvent $event): void
-    {
+    public function onBlockBreak(BlockBreakEvent $event): void {
         $block = $event->getBlock();
 
         foreach ($this->plugin->layData as $name => $data) {
@@ -202,8 +199,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onDataPacketReceive(DataPacketReceiveEvent $event): void
-    {
+    public function onDataPacketReceive(DataPacketReceiveEvent $event): void {
         $packet = $event->getPacket();
         $player = $event->getOrigin()->getPlayer();
 
@@ -212,13 +208,5 @@ class EventListener implements Listener
                 $this->plugin->unsetSit($player);
             }
         }
-    }
-
-    /**
-     * @return Config
-     */
-    private function getConfig(): Config
-    {
-        return $this->plugin->getConfig();
     }
 }

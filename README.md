@@ -6,6 +6,7 @@
 [![Star](https://img.shields.io/github/stars/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay/stargazers) <br>
 
 ### SimpleLay 2.0.0
+
 Added many features such as sitting, custom messages and permissions!
 
 ### Description
@@ -13,6 +14,7 @@ Added many features such as sitting, custom messages and permissions!
 With this plugin, you can sit and lay down wherever you want!
 
 ### Commands
+
 | Command | Description | Permission | Default |
 | --- | --- | --- | --- |
 | ```/lay``` | ```Lay on a block``` | ```simplelay.lay``` | ```true``` |
@@ -21,11 +23,14 @@ With this plugin, you can sit and lay down wherever you want!
 | ```/skick``` | ```Kick the player from a sitting or laying location``` | ```simplelay.skick``` | ```op``` |
 
 ### Issues
-Known Issues: 
+
+Known Issues:
+
 - No known issues :D
 
 For another issues, please report [here](https://github.com/brokiem/SimpleLay/issues/new)
 
 ### Images
+
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/laying1.PNG" alt="">
 <img src="https://github.com/brokiem/SimpleLay/blob/master/assets/sit1.PNG" alt="">

@@ -35,8 +35,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 
-class LayingEntity extends Human
-{
+class LayingEntity extends Human {
     /** @var Player $player */
     private Player $player;
 
@@ -51,15 +50,13 @@ class LayingEntity extends Human
      * @param Player $player
      * @param SimpleLay $simpleLay
      */
-    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt, Player $player, SimpleLay $simpleLay)
-    {
+    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt, Player $player, SimpleLay $simpleLay) {
         $this->player = $player;
         $this->simplelay = $simpleLay;
         parent::__construct($location, $skin, $nbt);
     }
 
-    public function onUpdate(int $currentTick): bool
-    {
+    public function onUpdate(int $currentTick): bool {
         if ($this->isFlaggedForDespawn()) {
             return false;
         }
@@ -70,8 +67,7 @@ class LayingEntity extends Human
         return true;
     }
 
-    public function attack(EntityDamageEvent $source): void
-    {
+    public function attack(EntityDamageEvent $source): void {
 
     }
 }
