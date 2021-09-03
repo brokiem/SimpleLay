@@ -180,10 +180,8 @@ class SimpleLay extends PluginBase {
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-lay-message", "&6You are no longer laying!")));
         unset($this->layData[strtolower($player->getName())]);
 
-        if ($entity instanceof LayingEntity) {
-            if (!$entity->isFlaggedForDespawn()) {
-                $entity->flagForDespawn();
-            }
+        if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+            $entity->flagForDespawn();
         }
 
         $player->teleport($player->getPosition()->add(0, 1.2, 0));
@@ -270,7 +268,7 @@ class SimpleLay extends PluginBase {
      * @param array $viewers
      * @param ClientboundPacket $packet
      */
-    public function broadcastPacket(array $viewers, ClientboundPacket $packet) {
+    public function broadcastPacket(array $viewers, ClientboundPacket $packet): void {
         /** @var Player $viewer */
         foreach ($viewers as $viewer) {
             $viewer->getNetworkSession()->sendDataPacket($packet);
@@ -374,7 +372,7 @@ class SimpleLay extends PluginBase {
      * @return bool
      */
     public function isToggleSit(Player $player): bool {
-        return in_array(strtolower($player->getName()), $this->toggleSit);
+        return in_array(strtolower($player->getName()), $this->toggleSit, true);
     }
 
     /**
@@ -412,10 +410,8 @@ class SimpleLay extends PluginBase {
     public function onDisable(): void {
         foreach ($this->getServer()->getWorldManager()->getWorlds() as $level) {
             foreach ($level->getEntities() as $entity) {
-                if ($entity instanceof LayingEntity) {
-                    if (!$entity->isFlaggedForDespawn()) {
-                        $entity->flagForDespawn();
-                    }
+                if (($entity instanceof LayingEntity) && !$entity->isFlaggedForDespawn()) {
+                    $entity->flagForDespawn();
                 }
             }
         }

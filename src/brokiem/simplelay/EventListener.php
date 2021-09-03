@@ -85,13 +85,11 @@ class EventListener implements Listener {
         $player = $event->getPlayer();
         $block = $event->getBlock();
 
-        if (!$this->plugin->isToggleSit($player)) {
-            if ($this->getConfig()->get("enable-tap-to-sit", true)) {
-                if ($block instanceof Slab and $block->getMeta() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
-                    $this->plugin->sit($player, $block);
-                } elseif ($block instanceof Stair and $block->getMeta() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
-                    $this->plugin->sit($player, $block);
-                }
+        if (!$this->plugin->isToggleSit($player) && $this->getConfig()->get("enable-tap-to-sit", true)) {
+            if ($block instanceof Slab and $block->getMeta() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
+                $this->plugin->sit($player, $block);
+            } elseif ($block instanceof Stair and $block->getMeta() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
+                $this->plugin->sit($player, $block);
             }
         }
     }
@@ -203,10 +201,8 @@ class EventListener implements Listener {
         $packet = $event->getPacket();
         $player = $event->getOrigin()->getPlayer();
 
-        if ($packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE) {
-            if ($this->plugin->isSitting($player)) {
-                $this->plugin->unsetSit($player);
-            }
+        if (($player !== null and $packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE) && $this->plugin->isSitting($player)) {
+            $this->plugin->unsetSit($player);
         }
     }
 }
