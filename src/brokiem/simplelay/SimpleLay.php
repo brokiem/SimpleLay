@@ -45,7 +45,6 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
-use pocketmine\network\mcpe\protocol\ClientboundPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\RemoveActorPacket;
 use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
@@ -239,14 +238,8 @@ class SimpleLay extends PluginBase {
         $player->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::RIDING, false);
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-sit-message", "&6You are no longer sitting!")));
 
-        $this->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk1);
-        $this->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
-    }
-
-    public function broadcastPacket(array $viewers, ClientboundPacket $packet): void {
-        foreach ($viewers as $viewer) {
-            $viewer->getNetworkSession()->sendDataPacket($packet);
-        }
+        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk1]);
+        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk]);
     }
 
     /**
@@ -318,8 +311,8 @@ class SimpleLay extends PluginBase {
         $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
         $player->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::RIDING, true);
 
-        $this->broadcastPacket($viewers, $pk);
-        $this->broadcastPacket($viewers, $link);
+        $this->getServer()->broadcastPackets($viewers, [$pk]);
+        $this->getServer()->broadcastPackets($viewers, [$link]);
 
         if ($this->isSitting($player)) {
             return;
@@ -355,7 +348,7 @@ class SimpleLay extends PluginBase {
         $pk->yRot = $player->getLocation()->getYaw();
         $pk->zRot = $player->getLocation()->getYaw();
 
-        $this->broadcastPacket($this->getServer()->getOnlinePlayers(), $pk);
+        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk]);
     }
 
     public function onDisable(): void {
