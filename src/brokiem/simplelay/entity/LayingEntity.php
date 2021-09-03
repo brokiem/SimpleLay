@@ -39,9 +39,6 @@ class LayingEntity extends Human {
     /** @var Player $player */
     private Player $player;
 
-    /** @var SimpleLay $simplelay */
-    private SimpleLay $simplelay;
-
     /**
      * LayingEntity constructor.
      * @param Location $location
@@ -50,10 +47,9 @@ class LayingEntity extends Human {
      * @param Player $player
      * @param SimpleLay $simpleLay
      */
-    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt, Player $player, SimpleLay $simpleLay) {
-        $this->player = $player;
-        $this->simplelay = $simpleLay;
+    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, ?Player $player = null) {
         parent::__construct($location, $skin, $nbt);
+        $this->player = $player;
     }
 
     public function onUpdate(int $currentTick): bool {

@@ -36,6 +36,9 @@ use pocketmine\block\Stair;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\EntityFactory;
+use pocketmine\entity\Human;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -54,6 +57,7 @@ use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\Position;
+use pocketmine\world\World;
 
 //use JackMD\UpdateNotifier\UpdateNotifier;
 
@@ -73,7 +77,9 @@ class SimpleLay extends PluginBase {
         $this->checkConfig();
         //UpdateNotifier::checkUpdate($this->getDescription()->getName(), $this->getDescription()->getVersion());
 
-        //EntityFactory::getInstance()->register(LayingEntity::class, ["LayingEntity"]);
+        EntityFactory::getInstance()->register(LayingEntity::class, function(World $world, CompoundTag $nbt): LayingEntity {
+            return new LayingEntity(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
+        }, ['LayingEntity']);
 
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
     }
@@ -213,7 +219,7 @@ class SimpleLay extends PluginBase {
         $nbt = SimpleLay::createBaseNBT($player->getLocation(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch());
 
         $pos = $player->getPosition()->add(0, -0.3, 0);
-        $layingEntity = new LayingEntity($player->getLocation(), $player->getSkin(), $nbt, $player, $this);
+        $layingEntity = new LayingEntity($player->getLocation(), $player->getSkin(), $nbt, $player);
         $layingEntity->getNetworkProperties()->setFloat(EntityMetadataProperties::BOUNDING_BOX_HEIGHT, 0.2);
         $layingEntity->getNetworkProperties()->setBlockPos(EntityMetadataProperties::PLAYER_BED_POSITION, $pos);
         $layingEntity->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::SLEEPING, true);
