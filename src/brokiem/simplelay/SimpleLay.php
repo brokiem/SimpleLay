@@ -28,23 +28,24 @@ declare(strict_types=1);
 namespace brokiem\simplelay;
 
 use brokiem\simplelay\entity\LayingEntity;
-//use JackMD\UpdateNotifier\UpdateNotifier;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
+use pocketmine\block\Opaque;
 use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
-use pocketmine\block\Opaque;
-use pocketmine\entity\EntityDataHelper;
-use pocketmine\entity\EntityFactory;
+use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\ClientboundPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\RemoveActorPacket;
 use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
-use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
@@ -54,8 +55,9 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\Position;
 
-class SimpleLay extends PluginBase
-{
+//use JackMD\UpdateNotifier\UpdateNotifier;
+
+class SimpleLay extends PluginBase {
 
     /** @var array $layData */
     public array $layData = [];
@@ -204,7 +206,7 @@ class SimpleLay extends PluginBase
 
         $player->saveNBT();
 
-        $nbt = EntityDataHelper::createBaseNBT($player->getLocation(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch());
+        $nbt = SimpleLay::createBaseNBT($player->getLocation(), null, $player->getLocation()->getYaw(), $player->getLocation()->getPitch());
 
         $pos = $player->getPosition()->add(0, -0.3, 0);
         $layingEntity = new LayingEntity($player->getLocation(), $player->getSkin(), $nbt, $player, $this);
@@ -232,10 +234,30 @@ class SimpleLay extends PluginBase
     }
 
     /**
+     * Helper function which creates minimal NBT needed to spawn an entity.
+     */
+    public static function createBaseNBT(Vector3 $pos, ?Vector3 $motion = null, float $yaw = 0.0, float $pitch = 0.0): CompoundTag {
+        return CompoundTag::create()
+            ->setTag("Pos", new ListTag([
+                new DoubleTag($pos->x),
+                new DoubleTag($pos->y),
+                new DoubleTag($pos->z)
+            ]))
+            ->setTag("Motion", new ListTag([
+                new DoubleTag($motion !== null ? $motion->x : 0.0),
+                new DoubleTag($motion !== null ? $motion->y : 0.0),
+                new DoubleTag($motion !== null ? $motion->z : 0.0)
+            ]))
+            ->setTag("Rotation", new ListTag([
+                new FloatTag($yaw),
+                new FloatTag($pitch)
+            ]));
+    }
+
+    /**
      * @param Player $player
      */
-    public function unsetLay(Player $player): void
-    {
+    public function unsetLay(Player $player): void {
         $entity = $this->layData[strtolower($player->getName())]["entity"];
 
         $player->setInvisible(false);
