@@ -27,7 +27,6 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay\entity;
 
-use brokiem\simplelay\SimpleLay;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
@@ -36,17 +35,8 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 
 class LayingEntity extends Human {
-    /** @var Player $player */
     private Player $player;
 
-    /**
-     * LayingEntity constructor.
-     * @param Location $location
-     * @param Skin $skin
-     * @param CompoundTag|null $nbt
-     * @param Player $player
-     * @param SimpleLay $simpleLay
-     */
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, ?Player $player = null) {
         parent::__construct($location, $skin, $nbt);
         $this->player = $player;
