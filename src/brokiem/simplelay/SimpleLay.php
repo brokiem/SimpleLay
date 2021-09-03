@@ -270,9 +270,9 @@ class SimpleLay extends PluginBase
     public function sit(Player $player, Block $block): void
     {
         if ($block instanceof Stair or $block instanceof Slab) {
-            $pos = $block->getPos()->add(0.5, 1.5, 0.5);
+            $pos = $block->getPosition()->add(0.5, 1.5, 0.5);
         } elseif ($block instanceof Opaque) {
-            $pos = $block->getPos()->add(0.5, 2.1, 0.5);
+            $pos = $block->getPosition()->add(0.5, 2.1, 0.5);
         } else {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-sit", "&cYou can only sit on the Opaque, Stair, or Slab block!")));
             return;

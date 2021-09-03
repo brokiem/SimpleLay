@@ -71,9 +71,9 @@ class EventListener implements Listener
                     $block = $sittingPlayer->getWorld()->getBlock($sittingPlayer->getPosition()->add(0, -0.3, 0));
 
                     if ($block instanceof Stair or $block instanceof Slab) {
-                        $pos = $block->getPos()->add(0.5, 1.5, 0.5);
+                        $pos = $block->getPosition()->add(0.5, 1.5, 0.5);
                     } elseif ($block instanceof Opaque) {
-                        $pos = $block->getPos()->add(0.5, 2.1, 0.5);
+                        $pos = $block->getPosition()->add(0.5, 2.1, 0.5);
                     } else {
                         return;
                     }
@@ -174,7 +174,7 @@ class EventListener implements Listener
         $block = $event->getBlock();
 
         foreach ($this->plugin->layData as $name => $data) {
-            if ($block->getPos()->equals($data["pos"])) {
+            if ($block->getPosition()->equals($data["pos"])) {
                 $player = $this->plugin->getServer()->getPlayerExact($name);
 
                 if ($player !== null) {
@@ -184,9 +184,9 @@ class EventListener implements Listener
         }
 
         if ($block instanceof Stair or $block instanceof Slab) {
-            $pos = $block->getPos()->add(0.5, 1.5, 0.5);
+            $pos = $block->getPosition()->add(0.5, 1.5, 0.5);
         } elseif ($block instanceof Opaque) {
-            $pos = $block->getPos()->add(0.5, 2.1, 0.5);
+            $pos = $block->getPosition()->add(0.5, 2.1, 0.5);
         } else {
             return;
         }
