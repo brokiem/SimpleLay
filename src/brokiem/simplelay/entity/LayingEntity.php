@@ -48,7 +48,6 @@ class LayingEntity extends Human {
         }
 
         $this->getArmorInventory()->setContents($this->player->getArmorInventory()->getContents());
-        $this->getInventory()->setContents($this->player->getInventory()->getContents());
         $this->getInventory()->setHeldItemIndex($this->player->getInventory()->getHeldItemIndex());
         return true;
     }
