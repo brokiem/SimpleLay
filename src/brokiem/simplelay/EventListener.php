@@ -34,7 +34,6 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
-use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
@@ -75,18 +74,7 @@ class EventListener implements Listener {
         }), 30);
     }
 
-    public function onInteract(PlayerInteractEvent $event): void {
-        $player = $event->getPlayer();
-        $block = $event->getBlock();
 
-        if (!$this->plugin->isToggleSit($player) && $this->getConfig()->get("enable-tap-to-sit", true)) {
-            if ($block instanceof Slab and $block->getMeta() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
-                $this->plugin->sit($player, $block);
-            } elseif ($block instanceof Stair and $block->getMeta() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
-                $this->plugin->sit($player, $block);
-            }
-        }
-    }
 
     private function getConfig(): Config {
         return $this->plugin->getConfig();
