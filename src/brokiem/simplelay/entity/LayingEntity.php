@@ -35,18 +35,13 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 
 class LayingEntity extends Human {
-    private Player $player;
 
-    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, ?Player $player = null) {
+    public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, private ?Player $player = null) {
         parent::__construct($location, $skin, $nbt);
-
-        if ($player !== null) {
-            $this->player = $player;
-        }
     }
 
     public function onUpdate(int $currentTick): bool {
-        if ($this->isFlaggedForDespawn()) {
+        if ($this->isFlaggedForDespawn() || $this->player === null) {
             return false;
         }
 
