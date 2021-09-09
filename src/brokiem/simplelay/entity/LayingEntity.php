@@ -39,7 +39,10 @@ class LayingEntity extends Human {
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null, ?Player $player = null) {
         parent::__construct($location, $skin, $nbt);
-        $this->player = $player;
+
+        if ($player !== null) {
+            $this->player = $player;
+        }
     }
 
     public function onUpdate(int $currentTick): bool {
