@@ -1,10 +1,10 @@
 name: SimpleLay
 main: brokiem\simplelay\SimpleLay
-version: 2.1.0
+version: 2.1.1
 api: [ 4.0.0 ]
 author: brokiem
 
-mcpe-protocol: [ 407, 408, 418, 419, 421, 422, 448 ]
+mcpe-protocol: [ 407, 408, 418, 419, 421, 422, 448, 465 ]
 
 commands:
   simplelay:
