@@ -4,7 +4,7 @@ version: 2.1.10
 api: [ 3.16.0 ]
 author: brokiem
 
-mcpe-protocol: [ 407, 408, 418, 419, 421, 422, 428, 431, 440, 448, 465. 471 ]
+mcpe-protocol: [ 407, 408, 418, 419, 421, 422, 428, 431, 440, 448, 465, 471 ]
 website: "https://github.com/brokiem/SimpleLay/"
 
 permissions:
