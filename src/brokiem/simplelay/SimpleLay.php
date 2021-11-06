@@ -48,6 +48,7 @@ use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\RemoveActorPacket;
 use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
+use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
@@ -201,7 +202,7 @@ class SimpleLay extends PluginBase {
         $pos = $player->getPosition()->add(0, -0.3, 0);
         $layingEntity = new LayingEntity($player->getLocation(), $player->getSkin(), $nbt, $player);
         $layingEntity->getNetworkProperties()->setFloat(EntityMetadataProperties::BOUNDING_BOX_HEIGHT, 0.2);
-        $layingEntity->getNetworkProperties()->setBlockPos(EntityMetadataProperties::PLAYER_BED_POSITION, $pos);
+        $layingEntity->getNetworkProperties()->setBlockPos(EntityMetadataProperties::PLAYER_BED_POSITION, new BlockPosition($pos->getFloorX(), $pos->getFloorY(), $pos->getFloorZ()));
         $layingEntity->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::SLEEPING, true);
 
         $layingEntity->setNameTag($player->getDisplayName());
@@ -229,7 +230,7 @@ class SimpleLay extends PluginBase {
 
     public function unsetSit(Player $player): void {
         $pk1 = new RemoveActorPacket();
-        $pk1->entityUniqueId = $this->sittingData[strtolower($player->getName())]['eid'];
+        $pk1->actorUniqueId = $this->sittingData[strtolower($player->getName())]['eid'];
 
         $pk = new SetActorLinkPacket();
         $pk->link = new EntityLink($this->sittingData[strtolower($player->getName())]['eid'], $player->getId(), EntityLink::TYPE_REMOVE, true, true);
@@ -302,7 +303,7 @@ class SimpleLay extends PluginBase {
         }
 
         $pk = new AddActorPacket();
-        $pk->entityRuntimeId = $eid;
+        $pk->actorRuntimeId = $eid;
         $pk->type = EntityIds::WOLF;
 
         $pk->position = $pos->asVector3();
@@ -346,10 +347,10 @@ class SimpleLay extends PluginBase {
     public function optimizeRotation(Player $player): void {
         $pk = new MoveActorAbsolutePacket();
         $pk->position = $this->sittingData[strtolower($player->getName())]['pos'];
-        $pk->entityRuntimeId = $this->sittingData[strtolower($player->getName())]['eid'];
-        $pk->xRot = $player->getLocation()->getPitch();
-        $pk->yRot = $player->getLocation()->getYaw();
-        $pk->zRot = $player->getLocation()->getYaw();
+        $pk->actorRuntimeId = $this->sittingData[strtolower($player->getName())]['eid'];
+        $pk->pitch = $player->getLocation()->getPitch();
+        $pk->yaw = $player->getLocation()->getYaw();
+        $pk->headYaw = $player->getLocation()->getYaw();
 
         $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk]);
     }
