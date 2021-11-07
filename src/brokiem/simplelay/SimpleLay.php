@@ -304,6 +304,7 @@ class SimpleLay extends PluginBase {
 
         $pk = new AddActorPacket();
         $pk->actorRuntimeId = $eid;
+        $pk->actorUniqueId = $player->getId();
         $pk->type = EntityIds::WOLF;
 
         $pk->position = $pos->asVector3();
