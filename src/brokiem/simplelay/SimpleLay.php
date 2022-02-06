@@ -179,13 +179,8 @@ class SimpleLay extends PluginBase {
 
     public function setLay(Player $player): void {
         $level = $player->getWorld();
-        if ($level !== null) {
-            $block = $level->getBlock($player->getPosition()->add(0, -0.5, 0));
-            if ($block instanceof Air) {
-                $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
-                return;
-            }
-        } else {
+        $block = $level->getBlock($player->getPosition()->add(0, -0.5, 0));
+        if ($block instanceof Air) {
             $player->sendMessage(TextFormat::colorize($this->getConfig()->get("cannot-be-occupied-lay", "&cYou can't lay here!")));
             return;
         }
