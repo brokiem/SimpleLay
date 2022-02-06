@@ -27,10 +27,12 @@ declare(strict_types=1);
 
 namespace brokiem\simplelay;
 
+use brokiem\simplelay\entity\LayingEntity;
 use pocketmine\block\Opaque;
 use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
@@ -40,6 +42,7 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -188,12 +191,33 @@ class EventListener implements Listener {
         }
     }
 
+    public function onDamageEvent(EntityDamageEvent $event): void {
+        $entity = $event->getEntity();
+
+        if (($entity instanceof Player) && $this->plugin->isLaying($entity) && $event->getCause() === EntityDamageEvent::CAUSE_SUFFOCATION) {
+            $event->cancel();
+        }
+    }
+
     public function onDataPacketReceive(DataPacketReceiveEvent $event): void {
         $packet = $event->getPacket();
         $player = $event->getOrigin()->getPlayer();
 
-        if (($player !== null and $packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE) && $this->plugin->isSitting($player)) {
+        if ($player === null) {
+            return;
+        }
+
+        if ($packet instanceof InteractPacket and $packet->action === InteractPacket::ACTION_LEAVE_VEHICLE && $this->plugin->isSitting($player)) {
             $this->plugin->unsetSit($player);
+        }
+
+        if ($this->plugin->isLaying($player) && $packet instanceof AnimatePacket) {
+            $entity = $this->plugin->layData[strtolower($player->getName())]["entity"];
+
+            if ($entity instanceof LayingEntity) {
+                $pk = AnimatePacket::create($entity->getId(), $packet->action);
+                $this->plugin->getServer()->broadcastPackets($entity->getViewers(), [$pk]);
+            }
         }
     }
 }

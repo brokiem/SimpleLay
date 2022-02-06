@@ -4,11 +4,10 @@ version: 2.1.1
 api: [ 4.0.0 ]
 author: brokiem
 
-mcpe-protocol: [ 407, 408, 418, 419, 421, 422, 448, 465, 471 ]
-
 commands:
   simplelay:
     description: "SimpleLay plugin credits and command list"
+    permission: simplelay.simplelay
   lay:
     description: "lay on a block"
     permission: simplelay.lay
@@ -27,6 +26,9 @@ commands:
     usage: /skick <player>
 
 permissions:
+  simplelay.simplelay:
+    default: true
+    description: "simplelay command permission"
   simplelay.lay:
     default: true
     description: "permission to allow the use of lay command"

@@ -205,8 +205,8 @@ class SimpleLay extends PluginBase {
         $layingEntity->getNetworkProperties()->setBlockPos(EntityMetadataProperties::PLAYER_BED_POSITION, new BlockPosition($pos->getFloorX(), $pos->getFloorY(), $pos->getFloorZ()));
         $layingEntity->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::SLEEPING, true);
 
+        $layingEntity->setCanSaveWithChunk(false);
         $layingEntity->setNameTag($player->getDisplayName());
-
         $layingEntity->spawnToAll();
 
         $player->teleport($player->getPosition()->add(0, -0.5, 0));
@@ -240,8 +240,7 @@ class SimpleLay extends PluginBase {
         $player->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::RIDING, false);
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-sit-message", "&6You are no longer sitting!")));
 
-        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk1]);
-        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk]);
+        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk1, $pk]);
     }
 
     /**
@@ -316,8 +315,7 @@ class SimpleLay extends PluginBase {
         $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
         $player->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::RIDING, true);
 
-        $this->getServer()->broadcastPackets($viewers, [$pk]);
-        $this->getServer()->broadcastPackets($viewers, [$link]);
+        $this->getServer()->broadcastPackets($viewers, [$pk, $link]);
 
         if ($this->isSitting($player)) {
             return;
