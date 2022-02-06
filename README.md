@@ -5,10 +5,6 @@
 [![Poggit](https://poggit.pmmp.io/shield.dl.total/SimpleLay)](https://poggit.pmmp.io/p/SimpleLay)
 [![Star](https://img.shields.io/github/stars/brokiem/SimpleLay)](https://github.com/brokiem/SimpleLay/stargazers) <br>
 
-### SimpleLay 2.0.0
-
-Added many features such as sitting, custom messages and permissions!
-
 ### Description
 
 With this plugin, you can sit and lay down wherever you want!
