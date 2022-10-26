@@ -54,6 +54,7 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\network\mcpe\protocol\types\entity\LongMetadataProperty;
+use pocketmine\network\mcpe\protocol\types\entity\PropertySyncData;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
@@ -305,6 +306,7 @@ class SimpleLay extends PluginBase {
         $pk->metadata = [
             EntityMetadataProperties::FLAGS => new LongMetadataProperty(1 << EntityMetadataFlags::IMMOBILE | 1 << EntityMetadataFlags::SILENT | 1 << EntityMetadataFlags::INVISIBLE),
         ];
+        $pk->syncedProperties = new PropertySyncData([], []);
 
         $link = new SetActorLinkPacket();
         $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
