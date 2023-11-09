@@ -44,6 +44,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\RemoveActorPacket;
@@ -165,7 +166,7 @@ class SimpleLay extends PluginBase {
         $entity = $this->layData[strtolower($player->getName())]["entity"];
 
         $player->setInvisible(false);
-        $player->setImmobile(false);
+        $player->setNoClientPredictions(false);
         $player->setScale(1);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-lay-message", "&6You are no longer laying!")));
@@ -213,7 +214,7 @@ class SimpleLay extends PluginBase {
         ];
 
         $player->setInvisible();
-        $player->setImmobile();
+        $player->setNoClientPredictions();
         $player->setScale(0.01);
 
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("lay-message", "&6You are now laying!")));
@@ -236,7 +237,7 @@ class SimpleLay extends PluginBase {
         $player->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::RIDING, false);
         $player->sendMessage(TextFormat::colorize($this->getConfig()->get("no-longer-sit-message", "&6You are no longer sitting!")));
 
-        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk1, $pk]);
+        NetworkBroadcastUtils::broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk1, $pk]);
     }
 
     /**
@@ -312,7 +313,7 @@ class SimpleLay extends PluginBase {
         $link->link = new EntityLink($eid, $player->getId(), EntityLink::TYPE_RIDER, true, true);
         $player->getNetworkProperties()->setGenericFlag(EntityMetadataFlags::RIDING, true);
 
-        $this->getServer()->broadcastPackets($viewers, [$pk, $link]);
+        NetworkBroadcastUtils::broadcastPackets($viewers, [$pk, $link]);
 
         if ($this->isSitting($player)) {
             return;
@@ -348,7 +349,7 @@ class SimpleLay extends PluginBase {
         $pk->yaw = $player->getLocation()->getYaw();
         $pk->headYaw = $player->getLocation()->getYaw();
 
-        $this->getServer()->broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk]);
+        NetworkBroadcastUtils::broadcastPackets($this->getServer()->getOnlinePlayers(), [$pk]);
     }
 
     public function onDisable(): void {

@@ -43,6 +43,7 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\player\Player;
@@ -84,9 +85,9 @@ class EventListener implements Listener {
         $block = $event->getBlock();
 
         if (!$this->plugin->isToggleSit($player) && $this->getConfig()->get("enable-tap-to-sit", true)) {
-            if ($block instanceof Slab and $block->getMeta() < 6 and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
+            if ($block instanceof Slab and $this->getConfig()->getNested("enabled-block-tap.slab", true)) {
                 $this->plugin->sit($player, $block);
-            } elseif ($block instanceof Stair and $block->getMeta() < 4 and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
+            } elseif ($block instanceof Stair and $this->getConfig()->getNested("enabled-block-tap.stair", true)) {
                 $this->plugin->sit($player, $block);
             }
         }
@@ -113,22 +114,6 @@ class EventListener implements Listener {
             $this->plugin->unsetSit($player);
         }
     }
-
-    /*public function onLevelChange(EntityLevelChangeEvent $event): void
-    {
-        $entity = $event->getEntity();
-
-        if ($entity instanceof Player) {
-            if ($this->plugin->isLaying($entity)) {
-                $this->plugin->unsetLay($entity);
-            } elseif ($this->plugin->isSitting($entity)) {
-                $this->plugin->unsetSit($entity);
-            }
-        }
-    }
-
-    What is this?
-    */
 
     public function onTeleport(EntityTeleportEvent $event): void {
         $entity = $event->getEntity();
@@ -225,7 +210,7 @@ class EventListener implements Listener {
 
             if ($entity instanceof LayingEntity) {
                 $pk = AnimatePacket::create($entity->getId(), $packet->action);
-                $this->plugin->getServer()->broadcastPackets($entity->getViewers(), [$pk]);
+                NetworkBroadcastUtils::broadcastPackets($entity->getViewers(), [$pk]);
             }
         }
     }
